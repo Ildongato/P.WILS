@@ -129,9 +129,19 @@ html.history-compact .history-more{grid-row:4;justify-self:start;min-height:44px
  html.history-compact .history-tabs{gap:12px}
 }
 
-/* V65. One measured segment connects the first and selected station. Its
-   one-pixel base is transformed by the same selection owner at every size. */
+/* V86. The measured rail follows scroll continuously; previous stations remain
+   filled. Desktop keeps its pinned scene, smaller views read in natural flow. */
 .history-scroll .history-progress,
-html.history-compact .history-progress{display:block;width:1px;right:auto;transform-origin:0 50%}
+html.history-flow .history-progress{display:block;width:1px;right:auto;transform-origin:0 50%}
 .history-scroll .history-tab::before,
-html.history-compact .history-tab::before{content:none;display:none}
+html.history-flow .history-tab::before{content:none;display:none}
+.history-tab[data-history-reached="true"]::after{border-color:var(--accent);background:var(--accent)}
+.history-tab[data-history-reached="true"] .year-label{color:var(--action-hover)}
+html.history-flow .history-tabs{position:sticky;top:calc(var(--header-h) + 12px);z-index:4;background:var(--canvas);margin-bottom:24px}
+/* Cover only the header gap; leave the existing gray baseline unobscured. */
+html.history-flow .history-tabs::before{content:'';position:absolute;top:-13px;left:0;right:0;height:12px;background:var(--canvas);z-index:-1;pointer-events:none}
+html.history-flow .history-panel{scroll-margin-top:calc(var(--header-h) + 12px + var(--history-rail-height,55px) + 24px)}
+html.history-flow .history-panel .history-image-stage{border-radius:var(--detail-photo-radius,8px)}
+@media print{
+ html.history-flow .history-tabs{position:static}
+}

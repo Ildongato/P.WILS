@@ -462,13 +462,15 @@
   // reveal has already been marked complete. Native motion is temporary and
   // always falls back to the readable, untransformed document.
   let historyTextMotion = null;
-  // Station progress describes the selected year, not the invisible scroll
-  // distance between reading stops. Measure actual dots, including grid gaps.
-  let historyRailGeometry = null, historyRailFrame = 0;
+  // The rail follows actual reading progress, including the distance between
+  // stops. Reached stations stay orange until the visitor scrolls back.
+  let historyRailGeometry = null, historyRailFrame = 0, historyRailPosition = 0;
+  let flowHistoryFrame = 0;
   function paintHistoryRail() {
     if (!historyRailGeometry) {
       const rail = yearRail.getBoundingClientRect();
       if (!rail.width) return;
+      historyChapter.style.setProperty('--history-rail-height', rail.height + 'px');
       historyRailGeometry = yearTabs.map(tab => {
         const box = tab.getBoundingClientRect(), dot = getComputedStyle(tab, '::after');
         const border = dot.boxSizing === 'border-box' ? 0 :
@@ -477,17 +479,19 @@
           (parseFloat(dot.left) || 0) + ((parseFloat(dot.width) || 0) + border) / 2;
       });
     }
-    const selected = yearTabs.findIndex(tab => tab.dataset.year === currentYear);
-    if (selected < 0) return;
+    const last = historyRailGeometry.length - 1;
+    const position = Math.max(0, Math.min(last, historyRailPosition));
+    const lower = Math.floor(position), upper = Math.min(last, lower + 1);
     const start = historyRailGeometry[0];
-    const end = Math.max(start, Math.min(historyRailGeometry.at(-1), historyRailGeometry[selected]));
+    const end = historyRailGeometry[lower] +
+      (historyRailGeometry[upper] - historyRailGeometry[lower]) * (position - lower);
     progressLine.style.transform = `translate3d(${start.toFixed(3)}px,0,0) scaleX(${(end - start).toFixed(3)})`;
     yearRail.dataset.stationYear = currentYear;
   }
   function requestHistoryRail() {
     historyRailGeometry = null;
     if (!historyRailFrame) historyRailFrame = requestAnimationFrame(() => {
-      historyRailFrame = 0; paintHistoryRail();
+      historyRailFrame = 0; paintHistoryRail(); requestFlowHistory();
     });
   }
   addEventListener('resize', requestHistoryRail, { passive: true });
@@ -520,7 +524,7 @@
       if (historyTextMotion === transition) historyTextMotion = null;
     });
   }
-  function selectYear(year, { motion = false } = {}) {
+  function selectYear(year, { motion = false, railPosition = null } = {}) {
     const target = yearPanels.find(p => p.dataset.historyPanel === year);
     if (!target) return;
     const changed = currentYear !== year;
@@ -528,8 +532,11 @@
     if (changed || !motion) clearHistoryTextMotion();
     settleHistoryText(target);
     currentYear = year;
-    yearTabs.forEach(tab => {
+    const selectedIndex = yearPanels.indexOf(target);
+    historyRailPosition = Number.isFinite(railPosition) ? railPosition : selectedIndex;
+    yearTabs.forEach((tab, index) => {
       const selected = tab.dataset.year === year;
+      tab.dataset.historyReached = String(index <= selectedIndex);
       if (storyMode || compactMode) {
         tab.setAttribute('aria-selected', String(selected));
         tab.tabIndex = selected ? 0 : -1;
@@ -555,23 +562,64 @@
   function setStoryMode(on) {
     settleHistoryTexts();
     storyMode = on;
-    compactMode = !on;
+    compactMode = false;
     if (!on) { ++historyImageToken; clearHistoryMask(); clearHistoryAtmosphere(); }
     root.classList.toggle('history-scroll', on);
     root.classList.toggle('history-compact', compactMode);
+    root.classList.toggle('history-flow', !on);
     historyRailGeometry = null;
-    // One link moves with the composition; no duplicated CTA or tab stop.
-    (compactMode ? historyInner : historyHeading).append(historyMore);
-    yearRail.setAttribute('role', 'tablist');
-    yearRail.setAttribute('aria-orientation', 'horizontal');
+    historyHeading.append(historyMore);
+    if (on) {
+      yearRail.setAttribute('role', 'tablist');
+      yearRail.setAttribute('aria-orientation', 'horizontal');
+    } else {
+      yearRail.removeAttribute('role'); yearRail.removeAttribute('aria-orientation');
+    }
     yearTabs.forEach(tab => {
-      tab.setAttribute('role', 'tab'); tab.setAttribute('aria-controls', 'history-' + tab.dataset.year);
+      if (on) {
+        tab.setAttribute('role', 'tab'); tab.setAttribute('aria-controls', 'history-' + tab.dataset.year);
+      } else { tab.removeAttribute('role'); tab.removeAttribute('aria-controls'); }
     });
     yearPanels.forEach(panel => {
-      panel.setAttribute('role', 'tabpanel'); panel.setAttribute('aria-labelledby', 'history-tab-' + panel.dataset.historyPanel);
+      if (on) {
+        panel.setAttribute('role', 'tabpanel'); panel.setAttribute('aria-labelledby', 'history-tab-' + panel.dataset.historyPanel);
+      } else {
+        panel.removeAttribute('role');
+        panel.setAttribute('aria-labelledby', panel.id + '-year ' + panel.id + '-title');
+        panel.hidden = false; panel.inert = false; panel.tabIndex = -1;
+      }
     });
     selectYear(currentYear);
+    requestFlowHistory();
   }
+  function updateFlowHistory() {
+    if (storyMode || compactMode || restoringHistoryRoute) return;
+    const header = parseFloat(getComputedStyle(root).getPropertyValue('--header-h')) || 0;
+    const stickyTop = parseFloat(getComputedStyle(yearRail).top);
+    const readAt = (Number.isFinite(stickyTop) ? stickyTop : header) + yearRail.getBoundingClientRect().height + 24;
+    const tops = yearPanels.map(panel => panel.getBoundingClientRect().top);
+    let index = 0;
+    while (index < tops.length - 1 && tops[index + 1] <= readAt + 1) ++index;
+    const distance = index < tops.length - 1 ? tops[index + 1] - tops[index] : 1;
+    const fraction = index < tops.length - 1 ? Math.max(0, Math.min(1, (readAt - tops[index]) / Math.max(1, distance))) : 0;
+    const year = yearPanels[index].dataset.historyPanel;
+    selectYear(year, { railPosition: index + fraction });
+    const bounds = historyChapter.getBoundingClientRect();
+    if (historyRouteReady && bounds.top <= header && bounds.bottom > readAt && location.hash !== '#history-' + year) {
+      history.replaceState(history.state, '', '#history-' + year);
+    }
+  }
+  function requestFlowHistory() {
+    if (flowHistoryFrame) return;
+    flowHistoryFrame = requestAnimationFrame(() => { flowHistoryFrame = 0; updateFlowHistory(); });
+  }
+  addEventListener('scroll', requestFlowHistory, { passive: true });
+  addEventListener('resize', requestFlowHistory, { passive: true });
+  addEventListener('pageshow', requestFlowHistory);
+  document.addEventListener('visibilitychange', requestFlowHistory);
+  yearPanels.forEach(panel => {
+    $('.history-image-stage img', panel)?.addEventListener('load', requestFlowHistory);
+  });
   function goToYear(year, smooth = true, { align = false } = {}) {
     const panel = yearPanels.find(p => p.dataset.historyPanel === year);
     if (!panel) return;
@@ -586,7 +634,10 @@
       window.scrollTo({ top: position, behavior: 'instant' });
     } else if (compactMode) {
       if (align) historyChapter.scrollIntoView({ block: 'start', behavior: 'instant' });
-    } else panel.scrollIntoView({ block: 'start', behavior: smooth && !reduced.matches ? 'smooth' : 'instant' });
+    } else {
+      panel.scrollIntoView({ block: 'start', behavior: smooth && !reduced.matches ? 'smooth' : 'instant' });
+      panel.focus({ preventScroll: true });
+    }
     requestAnimationFrame(() => finishPassedReveals());
   }
   yearTabs.forEach(tab => {
@@ -664,8 +715,7 @@
       selectGroup(target.closest('[data-group-panel]').dataset.groupPanel); target.open = true;
     } else if (target?.matches('[data-group-panel]')) selectGroup(target.dataset.groupPanel);
     else if (target?.matches('[data-history-panel]')) {
-      if (scroll || storyMode || compactMode) { goToYear(target.dataset.historyPanel, false, { align: scroll }); return; }
-      selectYear(target.dataset.historyPanel);
+      goToYear(target.dataset.historyPanel, false, { align: scroll }); return;
     }
     if (target) finishRevealsWithin(target.closest('[data-sheet]') || target);
     if (scroll && target) requestAnimationFrame(() => target.scrollIntoView({ block: 'start', behavior: 'instant' }));
@@ -746,7 +796,7 @@
         }
         const index = Math.min(3, Math.floor(self.progress * 4));
         const year = yearPanels[index].dataset.historyPanel;
-        selectYear(year, { motion: self.isActive });
+        selectYear(year, { motion: self.isActive, railPosition: self.progress * yearPanels.length });
         if (historyRouteReady && self.isActive && location.hash !== '#history-' + year) history.replaceState(history.state, '', '#history-' + year);
       }
       historyScroll = ScrollTrigger.create({
