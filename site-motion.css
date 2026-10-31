@@ -1,0 +1,17 @@
+/* V67: composed editorial entrances and stationary evidence. Visible by default. */
+.inner-page .site-motion-line{display:block;overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em}
+.inner-page .site-motion-ink{display:block;transform-origin:0 50%}
+.inner-page .site-motion-exposure-host{position:relative}
+.inner-page .site-motion-exposure{position:absolute;z-index:3;pointer-events:none;background:#000}
+/* Only an actively running controller writes opacity/transform. No hidden CSS baseline. */
+@media(prefers-reduced-motion:reduce){
+ .inner-page .site-motion-exposure{display:none}
+ .inner-page :is(.site-motion-composition,.site-motion-caption){opacity:1!important;transform:none!important}
+ .inner-page .site-motion-ink{transform:none!important;opacity:1!important}
+}
+@media print{
+ .inner-page .site-motion-exposure{display:none}
+ .inner-page :is(.site-motion-composition,.site-motion-caption){opacity:1!important;transform:none!important}
+ .inner-page [data-site-motion-state]{opacity:1!important;transform:none!important}
+ .inner-page .site-motion-ink{opacity:1!important;transform:none!important}
+}

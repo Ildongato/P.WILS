@@ -1,0 +1,71 @@
+/* One message composer for general contact and the preserved product-request URL. */
+.contact-composer{background:var(--surface)}
+.composer-layout{display:grid;grid-template-columns:4fr 8fr;gap:64px;align-items:start}
+.composer-intro h2{margin:0 0 20px}
+.composer-intro>p{max-width:34ch;margin:0 0 18px}
+.composer-intro .composer-explanation{font-size:16px;color:var(--muted)}
+.composer-intro>.text-link{display:flex;width:fit-content;max-width:100%;overflow-wrap:anywhere}
+.composer-intro .composer-privacy{font-size:14px;line-height:1.5;color:var(--muted);margin-top:24px;max-width:40ch}
+.composer-main{min-width:0}
+#request-form fieldset{margin:0;padding:0;border:0;min-width:0}
+#request-form input,#request-form textarea,#request-form select{font-family:inherit;font-size:16px;line-height:1.5;width:100%;max-width:100%;color:var(--ink);background:var(--surface);border:1px solid #919191;border-radius:0;padding:12px 14px;min-height:50px;caret-color:var(--ink)}
+#request-form textarea{resize:vertical;min-height:140px}
+#request-form select{padding-right:30px}
+#request-form input:hover,#request-form textarea:hover,#request-form select:hover{border-color:var(--ink)}
+#request-form input:focus-visible,#request-form textarea:focus-visible,#request-form select:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-color:var(--ink)}
+#request-form label{display:block;font-size:16px;line-height:1.4;font-weight:520;margin-bottom:8px}
+.request-field{margin-bottom:22px;min-width:0}
+.request-fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+.request-wide{grid-column:1/-1}
+.field-help,.request-optional{font-size:14px;line-height:1.5;color:var(--muted);margin:8px 0 0;max-width:75ch}
+.field-help a{text-decoration:underline;text-underline-offset:3px}
+.field-error{font-size:15px;line-height:1.5;color:var(--ink);margin:8px 0 0;font-weight:530}
+#request-form [aria-invalid=true]{border-width:2px;border-color:var(--ink);padding:11px 13px;background:var(--canvas)}
+.request-error-summary{font-size:16px;padding:18px 0;border-block:1px solid var(--ink);margin-bottom:24px}
+.request-disclosure{border-top:1px solid var(--rule);margin:0 0 22px;padding:0}
+.request-disclosure>summary{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:58px;list-style:none;cursor:pointer;font-size:17px;font-weight:520;padding:10px 0}
+.request-disclosure>summary::-webkit-details-marker{display:none}
+.request-disclosure>summary small{font-size:14px;font-weight:450;color:var(--muted)}
+.request-plus{width:18px;height:18px;position:relative;flex:none}
+.request-plus:before,.request-plus:after{content:'';position:absolute;background:currentColor;inset:8.25px 2px auto;height:1.5px}
+.request-plus:after{transform:rotate(90deg);transition:transform 160ms var(--ease-ui)}
+.request-disclosure[open] .request-plus:after{transform:rotate(0)}
+.request-disclosure>summary:hover .request-plus,.request-disclosure>summary:focus-visible .request-plus{color:var(--accent)}
+.request-disclosure>div{padding:4px 0 14px}
+.request-product-options{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+#request-form .product-options-group legend{font-size:16px;font-weight:560;padding:0 0 10px}
+#request-form .request-option{display:flex;align-items:flex-start;gap:12px;font-weight:450;min-height:44px;margin:0;padding:8px 0;cursor:pointer}
+#request-form .request-option input{width:18px;height:18px;min-height:18px;flex:none;padding:0;margin:3px 0 0;accent-color:var(--ink)}
+.request-option span{font-size:16px;line-height:1.5}
+.request-option small{display:block;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.request-context{margin:0 0 22px;background:var(--canvas);padding:18px 20px}
+.inner-page .request-context h3{font-size:17px;margin:0 0 10px}
+.request-context-row{display:flex;gap:20px;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--rule)}
+.request-context-row p{font-size:16px;margin:0}
+.request-context-row p span{display:block;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.request-context-row button{font-family:inherit;border:0;padding:0;background:none;cursor:pointer;flex:none;font-size:14px}
+.request-contact-fields{margin-top:28px;padding-top:24px;border-top:1px solid var(--rule)}
+.inner-page .request-contact-fields h3{font-size:24px;margin:0 0 22px}
+.request-submit{padding-top:6px}
+.request-submit>.field-help{margin:0 0 20px}
+#request-review{padding-top:0}
+.inner-page #request-review h3{font-size:28px;margin:0 0 24px}
+.request-recipient{padding:18px 0;margin-bottom:22px;border-block:1px solid var(--rule)}
+.request-recipient>span{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.request-recipient>a{font-weight:540;overflow-wrap:anywhere;text-decoration:underline;text-underline-offset:4px}
+.request-recipient>p{font-size:14px;color:var(--muted);margin:10px 0 0;max-width:70ch}
+#request-review-text{font:16px/1.6 'Host Grotesk',Arial,sans-serif;background:var(--canvas)!important;min-height:360px}
+.request-review-explanation,.request-fallback{font-size:15px;line-height:1.55;margin:20px 0}
+.review-actions{display:flex;align-items:center;gap:12px 24px;flex-wrap:wrap;margin:24px 0 12px}
+#request-form button.text-link{border:0;background:transparent;font-family:inherit;padding:0;color:var(--ink);cursor:pointer}
+#request-action-status{font-size:15px;line-height:1.5;max-width:66ch}
+.request-page .page-intro{display:grid;grid-template-columns:7fr 5fr;gap:32px;align-items:end}
+.request-page .page-intro p{margin:0;max-width:42ch;font-size:18px}
+.request-page .page-intro .request-brief{font-size:15px;line-height:1.5;color:var(--muted);margin-top:12px}
+@media(min-width:1101px) and (min-height:800px){.composer-intro{position:sticky;top:calc(var(--header-h) + 32px)}}
+@media(max-width:1100px){.composer-layout{grid-template-columns:4fr 8fr;gap:32px}}
+@media(max-width:820px){.composer-layout{grid-template-columns:1fr;gap:28px}.composer-intro{display:block}.composer-intro>p{max-width:60ch}.composer-intro .composer-privacy{max-width:66ch;margin-top:16px}.composer-intro>.text-link{display:inline-flex;margin-right:24px}.request-page .page-intro{grid-template-columns:1fr;gap:20px}.request-page .composer-intro{display:none}.request-page .contact-composer{padding-top:28px}}
+@media(max-width:600px){.request-fields-grid,.request-product-options{grid-template-columns:1fr}.request-wide{grid-column:auto}.composer-intro .composer-privacy{font-size:14px}.request-disclosure>summary{font-size:16px;min-height:56px}.request-disclosure>summary small{font-size:14px}.request-context{padding:16px}.request-context-row{gap:12px}.request-context-row button{font-size:14px}.inner-page #request-review h3{font-size:25px}.review-actions{gap:8px 22px}.request-page .page-intro p{font-size:17px}}
+@media print{.contact-composer{display:none}}
+
+#request-form button.text-link>.action-dot{display:none}

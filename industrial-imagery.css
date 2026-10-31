@@ -1,0 +1,19 @@
+/* V72: approved full-frame reference photography; compositions stay intact. */
+.company-page[data-industrial-imagery="72"] .company-workfloor-media{
+ width:100%;aspect-ratio:16/9;overflow:hidden;
+ border-radius:var(--detail-photo-radius,8px);background:var(--canvas);
+}
+.company-page[data-industrial-imagery="72"] .company-workfloor-media img{
+ display:block;width:100%;height:100%;object-fit:cover;object-position:50% 50%;
+ border-radius:inherit;
+}
+[data-industrial-imagery="72"].quality-content-71 .quality-control-row :is(.quality-equipment,.quality-storage-photo){
+ width:100%;max-width:none;
+}
+[data-industrial-imagery="72"].quality-content-71 .quality-control-row :is(.quality-equipment,.quality-storage-photo) img{
+ display:block;width:100%;height:auto;aspect-ratio:3/2;
+ object-fit:cover;object-position:50% 50%;border-radius:var(--detail-photo-radius,8px);
+}
+@media(max-width:600px){
+ .company-page[data-industrial-imagery="72"] .company-workfloor-media{aspect-ratio:4/3}
+}

@@ -1,0 +1,367 @@
+/* P.WILS · approved detail refinement V56. Source: work/details-system-v56/partials */
+/* V56: shared interaction grammar; the established page compositions stay intact. */
+:root{
+ --detail-photo-radius:8px;
+ --detail-duration:180ms;
+ --detail-ease:cubic-bezier(.22,1,.36,1);
+}
+.action-primary,.ui-enhanced .action-primary{
+ touch-action:manipulation;
+ transition:background-color var(--detail-duration) var(--detail-ease),border-color var(--detail-duration) var(--detail-ease);
+}
+.action-primary .action-dot{
+ border-radius:50%;
+ transition:transform var(--detail-duration) var(--detail-ease);
+}
+.action-primary:active .action-dot{transform:scale(1.12)}
+.action-primary:focus-visible{outline:2px solid var(--cta-ink,var(--ink));outline-offset:4px}
+.text-link,.product-caption-link,.product-source,.footer-nav a,.contact-register a{
+ text-decoration-thickness:1px;
+ text-underline-offset:.28em;
+ text-decoration-skip-ink:auto;
+}
+.text-link:is(:hover,:focus-visible),.product-caption-link:is(:hover,:focus-visible),
+.product-source:is(:hover,:focus-visible),.footer-nav a:is(:hover,:focus-visible),
+.contact-register a:is(:hover,:focus-visible){text-decoration-color:var(--accent)}
+.text-link svg,.document-link svg{flex:none;vertical-align:middle}
+.product-code,.file-type,time{font-variant-numeric:tabular-nums}
+@media(prefers-reduced-motion:reduce){
+ .action-primary,.ui-enhanced .action-primary,.action-primary .action-dot{transition:none}
+}
+
+/* V56: framed photographs only. Banners, full-bleed media, atmosphere,
+   logos, certificates and document/route artwork are deliberately excluded. */
+.product-image-stage,
+.products-one-page .pg-product-thumb,
+.products-one-page .pg-comparison-media,
+.company-director-photo,
+.company-archive-photo,
+.company-establishing-photo,
+.quality-source-photo.media-reveal,
+.quality-equipment.media-reveal,
+.inner-page .route-media > figure:not(.route-map) > .media-reveal{
+  border-radius:var(--detail-photo-radius,8px);
+  overflow:hidden;
+}
+:is(.product-image-stage,.pg-product-thumb,.pg-comparison-media,
+    .company-director-photo,.company-archive-photo,.company-establishing-photo,
+    .quality-source-photo,.quality-equipment) > img,
+.company-technical-images img,
+.inner-page .route-media > figure:not(.route-map) > .media-reveal > img{
+  border-radius:var(--detail-photo-radius,8px);
+}
+/* On wide screens this photograph is a fading background, not a frame.
+   At the existing stacked breakpoint it becomes a normal framed photograph. */
+@media(max-width:1000px){
+  .company-chapter .company-photo,
+  .company-chapter .company-photo > img{
+    border-radius:var(--detail-photo-radius,8px);
+  }
+}
+
+/* Product disclosure: the entire summary remains the click target.
+   The 24px icon slot never grows; only its fine SVG responds. */
+.products-chapter .product-disclosure > summary{
+  position:relative;
+  grid-template-columns:minmax(0,1fr) max-content 24px;
+  align-items:baseline;
+}
+.products-chapter .product-disclosure > summary::before,
+.products-chapter .product-disclosure > summary::after{
+  content:none;
+}
+.products-chapter .product-name{
+  min-width:0;
+  font-weight:520;
+  text-decoration:none;
+}
+.products-chapter .product-code{
+  align-self:baseline;
+  letter-spacing:0;
+  line-height:1.4;
+  font-weight:450;
+  font-variant-numeric:tabular-nums;
+}
+.products-chapter .product-disclosure > summary .disclosure-mark{
+  grid-column:3;
+  grid-row:1;
+  align-self:center;
+  justify-self:end;
+  display:grid;
+  place-items:center;
+  width:24px;
+  height:24px;
+  min-width:24px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  color:var(--ink);
+  transform:none;
+  transition:color 180ms var(--ease-ui);
+}
+.products-chapter .product-disclosure > summary .disclosure-mark::before,
+.products-chapter .product-disclosure > summary .disclosure-mark::after{
+  content:none;
+}
+.products-chapter .product-disclosure > summary .disclosure-mark svg{
+  width:20px;
+  height:20px;
+  transform:scale(1);
+  transform-origin:center;
+  transition:transform 180ms var(--ease-ui);
+}
+.products-chapter .product-disclosure:not([open]) > summary:is(:hover,:focus-visible) .disclosure-mark svg{
+  transform:scale(1.04);
+}
+.products-chapter .product-disclosure[open] > summary .product-name{
+  font-weight:600;
+}
+.products-chapter .product-disclosure[open] > summary .disclosure-mark{
+  color:var(--accent);
+}
+.products-chapter .product-disclosure[open] > summary .disclosure-mark svg{
+  transform:scale(1.08);
+}
+.products-chapter .product-disclosure > summary .plus-stem{
+  opacity:1;
+}
+.products-chapter .product-disclosure[open] > summary .plus-stem{
+  opacity:0;
+}
+.products-chapter .product-disclosure > summary:focus-visible{
+  outline:2px solid var(--ink);
+  outline-offset:4px;
+}
+
+/* The full product page is a readable register, never another accordion. */
+.products-one-page .pg-code{
+  color:var(--muted);
+  font-weight:450;
+  letter-spacing:0;
+  font-variant-numeric:tabular-nums;
+}
+.products-one-page .pg-columns{
+  font-weight:500;
+}
+.products-one-page .pg-entry-data dt{
+  font-weight:450;
+}
+.products-one-page .pg-entry-data dd{
+  font-variant-numeric:tabular-nums;
+}
+.products-one-page .pg-product-entry.is-current .pg-name{
+  font-weight:600;
+  text-decoration:none;
+}
+
+/* V59: the restored timeline shares the same photo token as all other frames.
+   Its geometry, year controls and scroll controller retain their existing owner. */
+.history-chapter .history-image-stage,
+html.history-compact .history-chapter .history-image-stage,
+.history-chapter .history-image-mask{
+  border-radius:var(--detail-photo-radius,8px);
+  overflow:hidden;
+}
+.history-chapter .history-image-stage > img{
+  border-radius:inherit;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .products-chapter .product-disclosure > summary .disclosure-mark,
+  .products-chapter .product-disclosure > summary .disclosure-mark svg{
+    transition:none;
+  }
+  .products-chapter .product-disclosure > summary .disclosure-mark svg{
+    transform:none!important;
+  }
+}
+
+/* V61: compact year selection uses the existing continuous rail and station dot.
+   A per-tab orange bar stops at each grid gap; keep that bar out of this mode. */
+html.history-compact .history-tab::before{
+ content:none;
+ display:none;
+}
+
+/* V56 utilities: existing forms, documents and compact footer; no layout redesign. */
+#request-form :is(input,textarea,select):focus-visible{
+  outline:2px solid var(--ink);
+  outline-offset:3px;
+  border-color:var(--ink);
+  box-shadow:none;
+}
+#request-form label{color:var(--ink)}
+#request-form :is(.field-help,.request-optional){font-size:15px;line-height:1.5;color:var(--muted)}
+.contact-composer .composer-intro .composer-privacy{font-size:15px;line-height:1.5;color:var(--muted)}
+#request-form :is(.field-error,.request-error-summary){line-height:1.5}
+#request-form :is(button.text-link,.request-context-row button){
+  display:inline-flex;
+  align-items:center;
+  min-height:44px;
+  min-width:44px;
+  line-height:1.4;
+  font-size:15px;
+}
+#request-form .request-context-row{min-width:0}
+#request-form .request-context-row p{min-width:0;overflow-wrap:anywhere}
+#request-form .request-context-row button{padding-block:8px;padding-left:12px;flex:none}
+#request-form :is(button.text-link,.request-disclosure>summary):focus-visible{
+  outline:2px solid var(--ink);
+  outline-offset:4px;
+}
+#request-form .request-context-row p span{font-variant-numeric:tabular-nums}
+#request-form .request-disclosure>summary>span:first-child{min-width:0}
+#request-form .request-disclosure .request-plus{
+  color:var(--ink);
+  transform:scale(1);
+  transition:transform 180ms var(--ease-ui);
+}
+#request-form .request-disclosure .request-plus::after{transition:opacity 160ms var(--ease-ui),transform 160ms var(--ease-ui)}
+#request-form .request-disclosure>summary:hover .request-plus{transform:scale(1.04)}
+#request-form .request-disclosure[open] .request-plus{color:var(--accent);transform:scale(1.08)}
+#request-form .request-disclosure[open] .request-plus::after{opacity:0;transform:rotate(90deg)}
+
+/* A common document line: fixed icon, wrapping action, trailing file type. */
+.document-link,.quality-opening .quality-pdf-link{
+  display:grid;
+  grid-template-columns:20px minmax(0,1fr) auto;
+  align-items:center;
+  column-gap:10px;
+  row-gap:2px;
+  min-width:0;
+  max-width:100%;
+  min-height:44px;
+  line-height:1.45;
+  text-decoration:none;
+}
+.document-link>svg,.quality-opening .quality-pdf-link>svg{
+  width:20px;
+  height:20px;
+  align-self:center;
+  flex:none;
+}
+.document-link>.document-title,
+.quality-opening .quality-pdf-link>span:not(.quality-file-type):not(.sr-only){
+  min-width:0;
+  overflow-wrap:anywhere;
+  text-decoration:underline;
+  text-decoration-thickness:1px;
+  text-decoration-color:var(--muted);
+  text-underline-offset:5px;
+  transition:text-decoration-color 180ms var(--ease-ui);
+}
+.document-link>.file-type,.quality-opening .quality-pdf-link>.quality-file-type{
+  justify-self:end;
+  align-self:center;
+  white-space:nowrap;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.4;
+  font-weight:450;
+  letter-spacing:.01em;
+  text-decoration:none;
+}
+.document-link:is(:hover,:focus-visible)>.document-title,
+.quality-opening .quality-pdf-link:is(:hover,:focus-visible)>span:not(.quality-file-type):not(.sr-only){text-decoration-color:var(--accent)}
+.document-link:focus-visible,.quality-opening .quality-pdf-link:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+.quality-document-data,.quality-reference{font-variant-numeric:tabular-nums}
+
+/* The footer keeps its current footprint and uses the same fine plus/orange minus. */
+.site-footer .footer-documents>summary{min-height:52px;line-height:1.5}
+.site-footer .footer-documents>summary>span:first-child{min-width:0;overflow-wrap:anywhere}
+.site-footer .footer-documents .disclosure-mark{
+  color:var(--ink);
+  transform:scale(1);
+  transition:transform 180ms var(--ease-ui);
+}
+.site-footer .footer-documents>summary:hover .disclosure-mark{color:var(--ink);transform:scale(1.04)}
+.site-footer .footer-documents[open]>summary .disclosure-mark{color:var(--accent);transform:scale(1.08)}
+.site-footer .footer-documents .plus-stem{transition:opacity 160ms var(--ease-ui)}
+.site-footer .footer-documents[open] .plus-stem{opacity:0}
+.site-footer .footer-document-type{font-size:14px;line-height:1.4;color:var(--muted)}
+.site-footer :is(.footer-nav,.language-pdf-grid) a{
+  min-height:44px;
+  text-decoration-thickness:1px;
+  text-underline-offset:5px;
+  transition:text-decoration-color 180ms var(--ease-ui);
+}
+.site-footer :is(.footer-nav,.language-pdf-grid) a:is(:hover,:focus-visible){text-decoration-color:var(--accent)}
+.site-footer :is(.footer-documents>summary,.footer-nav a,.language-pdf-grid a):focus-visible{
+  outline:2px solid var(--ink);
+  outline-offset:4px;
+}
+@media(prefers-reduced-motion:reduce){
+  #request-form .request-disclosure .request-plus,
+  #request-form .request-disclosure .request-plus::after,
+  .document-link>.document-title,
+  .quality-opening .quality-pdf-link>span:not(.quality-file-type):not(.sr-only),
+  .site-footer .footer-documents .disclosure-mark,
+  .site-footer .footer-documents .plus-stem,
+  .site-footer :is(.footer-nav,.language-pdf-grid) a{transition:none}
+}
+
+/* V56 navigation: one orange current-page rail; hover never impersonates it. */
+.site-header .desktop-nav{position:relative}
+.site-header .desktop-nav>a.nav-link::after{
+ height:1px;background:currentColor;opacity:.65;transform:scaleX(0);
+ transition:transform 180ms var(--ease-ui),opacity 180ms var(--ease-ui);
+}
+.site-header .desktop-nav>a.nav-link:is(:hover,:focus-visible)::after{transform:scaleX(1)}
+.site-header .desktop-nav>a.nav-link[aria-current="page"]::after{
+ height:2px;background:var(--accent);opacity:1;transform:scaleX(1);
+}
+.site-header .desktop-nav[data-nav-marker-ready]>a.nav-link[aria-current="page"]::after{content:none}
+.site-header .desktop-nav>a.nav-link:focus-visible{
+ outline:2px solid currentColor;outline-offset:5px;
+}
+.nav-active-marker{
+ position:absolute;inset:0 auto auto 0;width:1px;height:2px;
+ background:var(--accent);transform-origin:0 50%;pointer-events:none;
+ opacity:0;transform:translate3d(0,0,0) scaleX(0);
+ transition:transform 320ms var(--ease-ui),opacity 160ms var(--ease-ui);
+}
+.nav-active-marker.is-visible{opacity:1}
+.nav-active-marker[data-marker-snap]{transition:none}
+/* The existing mobile menu owns opening, closing and language selection. */
+.site-header .mobile-menu>.nav-link[aria-current="page"]{
+ text-decoration:underline;text-decoration-color:var(--accent);
+ text-decoration-thickness:2px;text-underline-offset:6px;
+}
+.site-header .mobile-menu>.nav-link:not([aria-current="page"]):is(:hover,:focus-visible){
+ text-decoration-color:currentColor;text-decoration-thickness:1px;
+}
+@media(max-width:1100px){.nav-active-marker{display:none}}
+
+/* Only opted-in inner pages participate; JS adds the @view-transition rule
+   after support checks. Home never opts in. No navigation is intercepted. */
+html[data-wils-page-transition] .site-header{view-transition-name:wils-header}
+::view-transition-old(root){
+ animation:wils-page-leave 300ms cubic-bezier(.22,1,.36,1) both;
+ mix-blend-mode:normal;
+}
+::view-transition-new(root){
+ animation:wils-page-arrive 300ms cubic-bezier(.22,1,.36,1) both;
+ mix-blend-mode:normal;
+}
+::view-transition-group(wils-header){animation:none}
+::view-transition-old(wils-header){animation:wils-header-leave 300ms cubic-bezier(.22,1,.36,1) both}
+::view-transition-new(wils-header){animation:wils-header-arrive 300ms cubic-bezier(.22,1,.36,1) both}
+@keyframes wils-page-leave{from{opacity:1}to{opacity:0}}
+@keyframes wils-page-arrive{from{opacity:0;transform:translate3d(0,8px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes wils-header-leave{from{opacity:1}to{opacity:0}}
+@keyframes wils-header-arrive{from{opacity:0}to{opacity:1}}
+/* A cross-document arrival supplies this first-viewport entrance already.
+   Persistent readable overrides also settle a late IntersectionObserver callback.
+   No hero camera, parallax target or timeline element is selected here. */
+[data-wils-arrival-settled][data-opening-group],
+[data-wils-arrival-settled].enter,
+[data-wils-arrival-settled][data-enter],
+[data-wils-arrival-settled] [data-banner-title]{opacity:1!important;transform:none!important}
+[data-wils-arrival-settled]>.reveal-curtain,
+[data-wils-arrival-settled] .page-banner-curtain{display:none!important}
+@media(prefers-reduced-motion:reduce){
+ .nav-active-marker,.site-header .desktop-nav>a.nav-link::after{transition:none}
+ ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
+}

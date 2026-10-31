@@ -1,0 +1,169 @@
+/* V81: three quality chapters, using the existing industrial type and photo system. */
+.quality-structure-81 .quality-opening.quality-documents{padding-block:28px 36px}
+.quality-structure-81 .quality-opening-lead h2,
+.quality-structure-81 .quality-process h2,
+.quality-structure-81 .quality-service h2{
+ font-size:clamp(28px,2.25vw,32px);line-height:1.15;font-weight:550;
+ letter-spacing:-.025em;margin:0;text-wrap:balance;
+}
+.quality-structure-81 .quality-identification-row{
+ grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) 132px;
+ gap:24px;align-items:center;border-top:1px solid var(--rule);padding-top:24px;
+}
+.quality-structure-81 .quality-identity-copy{min-width:0;max-width:84ch}
+.quality-structure-81 .quality-identity-copy h3{
+ font-size:20px;line-height:1.25;font-weight:550;letter-spacing:-.02em;margin:0 0 8px;
+}
+.quality-structure-81 .quality-identity-copy p{
+ font-size:16px;line-height:1.5;max-width:76ch;margin:0;
+}
+.quality-structure-81 .quality-identity-copy .text-link{font-size:16px;margin-top:2px}
+.quality-structure-81 .quality-identification-mark{
+ width:132px;max-width:none;justify-self:end;padding:0;display:block;
+}
+.quality-structure-81 .quality-identification-mark img{width:112px;height:auto}
+.quality-structure-81 .quality-identification-mark figcaption{
+ font-size:14px;line-height:1.4;max-width:19ch;margin-top:6px;
+}
+.quality-structure-81 .quality-process{padding-block:40px;background:var(--canvas)}
+.quality-structure-81 .quality-process-heading{
+ display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);
+ gap:32px;align-items:start;margin-bottom:32px;
+}
+.quality-structure-81 .quality-process-heading .prose{max-width:72ch}
+.quality-structure-81 .quality-process-heading p{
+ font-size:17px;line-height:1.55;margin:0;
+}
+.quality-structure-81 .quality-process-heading .text-link{margin-top:6px}
+.quality-structure-81 .quality-process h3{
+ font-size:24px;line-height:1.2;font-weight:550;letter-spacing:-.02em;margin:0 0 12px;
+}
+.quality-structure-81 .quality-trace-inline,
+.quality-structure-81 .quality-storage-inline{
+ display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,304px);
+ gap:32px;align-items:center;border-top:1px solid var(--rule);padding-top:24px;
+}
+.quality-structure-81 .quality-trace-copy,
+.quality-structure-81 .quality-storage-copy{min-width:0;max-width:70ch}
+.quality-structure-81 :is(.quality-trace-copy,.quality-storage-copy) p{
+ font-size:17px;line-height:1.55;margin:0;max-width:65ch;
+}
+.quality-structure-81 .quality-trace-inline .quality-source-photo,
+.quality-structure-81 .quality-storage-inline .quality-storage-photo{
+ width:100%;max-width:none;justify-self:end;align-self:start;padding:0;
+}
+.quality-structure-81 :is(.quality-trace-inline,.quality-storage-inline) img{
+ display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;
+ border-radius:var(--detail-photo-radius,8px);background:var(--canvas);
+}
+.quality-structure-81 .quality-process figcaption{
+ font-size:14px;line-height:1.45;margin-top:8px;
+}
+.quality-structure-81 .quality-control-inline{margin-top:32px}
+.quality-structure-81 .quality-control-inline>h3{margin-bottom:18px}
+.quality-structure-81 .quality-control-register{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;border:0;
+}
+.quality-structure-81 .quality-control-row{
+ display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);
+ grid-template-rows:auto;gap:24px;align-items:start;min-width:0;
+ padding:20px 0 0;border-top:1px solid var(--rule);border-bottom:0;
+}
+.quality-structure-81 .quality-control-row .prose{min-width:0;max-width:none}
+.quality-structure-81 .quality-control-row h4{
+ font-size:20px;line-height:1.25;font-weight:550;letter-spacing:-.015em;margin:0 0 10px;
+}
+.quality-structure-81 .quality-control-row p{font-size:16px;line-height:1.55;margin:0}
+.quality-structure-81 .quality-control-row .quality-equipment{
+ width:100%;max-width:none;justify-self:end;align-self:start;padding:0;
+}
+.quality-structure-81 .quality-control-row .quality-equipment img{
+ display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;
+ border-radius:var(--detail-photo-radius,8px);background:var(--canvas);
+}
+.quality-structure-81 .quality-storage-inline{margin-top:32px}
+.quality-structure-81 .quality-service{padding-block:36px 40px;background:var(--surface)}
+.quality-structure-81 .quality-service .quality-contact{
+ display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);
+ gap:32px;align-items:start;padding:0;border:0;min-width:0;
+}
+.quality-structure-81 .quality-contact-intro,
+.quality-structure-81 .quality-contact-details,
+.quality-structure-81 .quality-contact-help{min-width:0}
+.quality-structure-81 .quality-service .quality-contact h2{margin:0 0 12px}
+.quality-structure-81 .quality-contact-intro p{font-size:16px;line-height:1.55;margin:0;max-width:40ch}
+.quality-structure-81 :is(.quality-contact-email,.quality-contact-phone){
+ display:flex;align-items:center;min-height:44px;max-width:100%;
+ font-size:16px;line-height:1.5;overflow-wrap:anywhere;
+}
+.quality-structure-81 .quality-contact-details .quality-contact-people{
+ font-size:16px;line-height:1.5;color:var(--muted);margin:8px 0 0;
+}
+.quality-structure-81 .quality-service .quality-contact-help{
+ grid-column:auto;grid-row:auto;border:0;padding:0;margin:0;
+}
+.quality-structure-81 .quality-contact-help h3{
+ font-size:18px;line-height:1.35;font-weight:550;letter-spacing:-.01em;margin:0 0 10px;
+}
+.quality-structure-81 .quality-contact-help ul{font-size:16px;line-height:1.5;margin:0 0 12px;padding-left:20px}
+.quality-structure-81 .quality-contact-help li{margin:3px 0;padding:0}
+.quality-structure-81 .quality-contact-help p{font-size:16px;line-height:1.55;margin:0;max-width:45ch}
+.quality-structure-81 .quality-page a:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+.quality-structure-81.inner-opening-47.has-sticky-chapters :is(
+ #brcgs,#acs,#beter-leven,#ikb,#bedrijfsidentificatie,#traceerbaarheid,
+ #metaaldetectie,#samenstelling-en-foodscan,#gekoeld-en-bevroren,#hygiene-en-productie
+){scroll-margin-top:calc(var(--chapters-offset) + 24px)}
+@media(max-width:1100px){
+ .quality-structure-81 .quality-process-heading{grid-template-columns:minmax(0,1fr) minmax(0,1.7fr);gap:24px}
+ .quality-structure-81 .quality-control-register{gap:24px}
+ .quality-structure-81 .quality-control-row{gap:20px}
+ .quality-structure-81 .quality-service .quality-contact{grid-template-columns:minmax(0,.9fr) minmax(0,1fr) minmax(0,1.1fr);gap:24px}
+}
+@media(max-width:820px){
+ .quality-structure-81 .quality-process-heading{grid-template-columns:1fr;gap:16px;margin-bottom:28px}
+ .quality-structure-81 .quality-trace-inline,
+ .quality-structure-81 .quality-storage-inline{grid-template-columns:minmax(0,1fr) minmax(200px,38%);gap:24px;align-items:start}
+ .quality-structure-81 .quality-control-register{grid-template-columns:1fr;gap:24px}
+ .quality-structure-81 .quality-control-row{grid-template-columns:minmax(0,1fr) minmax(200px,38%);gap:24px}
+ .quality-structure-81 .quality-service .quality-contact{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 28px}
+ .quality-structure-81 .quality-contact-intro{grid-column:1/-1}
+}
+@media(max-width:600px){
+ .quality-structure-81 .quality-opening.quality-documents{padding-block:24px 28px}
+ .quality-structure-81 .quality-identification-row{grid-template-columns:minmax(0,1fr) 96px;gap:18px;align-items:start;padding-top:22px}
+ .quality-structure-81 .quality-identification-mark{width:96px}
+ .quality-structure-81 .quality-identification-mark img{width:96px}
+ .quality-structure-81 .quality-identification-mark figcaption{font-size:14px;max-width:16ch}
+ .quality-structure-81 .quality-process{padding-block:32px}
+ .quality-structure-81 .quality-process-heading{margin-bottom:24px}
+ .quality-structure-81 .quality-process h3{font-size:23px;margin-bottom:10px}
+ .quality-structure-81 .quality-process-heading p,
+ .quality-structure-81 :is(.quality-trace-copy,.quality-storage-copy) p{font-size:16px}
+ .quality-structure-81 .quality-trace-inline,
+ .quality-structure-81 .quality-storage-inline,
+ .quality-structure-81 .quality-control-row{grid-template-columns:1fr;gap:18px;padding-top:20px}
+ .quality-structure-81 .quality-control-inline,
+ .quality-structure-81 .quality-storage-inline{margin-top:28px}
+ .quality-structure-81 .quality-control-inline>h3{margin-bottom:16px}
+ .quality-structure-81 .quality-process :is(.quality-source-photo,.quality-equipment,.quality-storage-photo){max-width:360px;justify-self:start}
+ .quality-structure-81[data-industrial-imagery] .quality-control-row .quality-equipment{max-width:360px;justify-self:start}
+ .quality-structure-81 .quality-control-row h4{font-size:20px}
+ .quality-structure-81 .quality-service{padding-block:28px 32px}
+ .quality-structure-81 .quality-service .quality-contact{grid-template-columns:1fr;gap:18px}
+ .quality-structure-81 .quality-contact-intro{grid-column:auto}
+ .quality-structure-81 .quality-service .quality-contact-help{border-top:1px solid var(--rule);padding-top:20px;margin-top:2px}
+}
+@media(max-width:360px){
+ .quality-structure-81 .quality-identification-row{grid-template-columns:1fr;gap:16px}
+ .quality-structure-81 .quality-identification-mark{display:flex;gap:16px;align-items:center;width:auto;justify-self:start}
+ .quality-structure-81 .quality-identification-mark figcaption{margin:0;max-width:18ch}
+}
+@media print{
+ .quality-structure-81 .quality-process,
+ .quality-structure-81 .quality-service{padding-block:24px;background:none}
+ .quality-structure-81 .quality-process-heading{grid-template-columns:1fr;gap:12px}
+ .quality-structure-81 .quality-control-register{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .quality-structure-81 .quality-control-row{grid-template-columns:1fr;break-inside:avoid}
+ .quality-structure-81 .quality-service .quality-contact{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .quality-structure-81 .quality-contact-intro{grid-column:auto}
+}
