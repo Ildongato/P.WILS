@@ -56,6 +56,3 @@
 .contact-page .route-map--brand figcaption a{min-height:44px}
 @media(max-width:820px){.contact-page .route-media{grid-template-columns:minmax(0,1fr)}.contact-page .route-map--brand .route-map-frame{min-height:320px}}
 @media(max-width:360px){.contact-page .route-map--brand figcaption{align-items:start;gap:4px;flex-direction:column;padding-top:8px}}
-
-/* Public release: the internal photo brief is not visitor content. */
-.route-practical{grid-template-columns:minmax(0,1fr)}
