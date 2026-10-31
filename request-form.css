@@ -1,0 +1,55 @@
+/* V87. One question and product-request pattern on Contact and Producten.
+   This last layer is restricted to the shared form; the page composition stays intact. */
+:is(.contact-efficiency-84,.products-one-page) form#request-form[data-request-form="87"]{min-width:0;max-width:800px;margin:0}
+form#request-form[data-request-form="87"] [hidden]{display:none!important}
+form#request-form[data-request-form="87"] fieldset{min-width:0;margin:0;padding:0;border:0}
+form#request-form[data-request-form="87"] .request-fields-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}
+form#request-form[data-request-form="87"] .request-wide{grid-column:1/-1}
+form#request-form[data-request-form="87"] .request-field{min-width:0;margin:0 0 16px}
+:is(.contact-efficiency-84,.products-one-page) form#request-form[data-request-form="87"] label{display:block;font-size:15px;line-height:1.4;font-weight:520;margin-bottom:7px}
+:is(.contact-efficiency-84,.products-one-page) form#request-form[data-request-form="87"] :is(input:not([type="checkbox"]),textarea,select){display:block;width:100%;max-width:100%;min-height:48px;border:1px solid #919191;border-radius:0;background:var(--surface);color:var(--ink);font:inherit;font-size:16px;line-height:1.5;padding:11px 14px;caret-color:var(--ink)}
+:is(.contact-efficiency-84,.products-one-page) form#request-form[data-request-form="87"] select{padding-right:32px}
+:is(.contact-efficiency-84,.products-one-page) form#request-form[data-request-form="87"] textarea{min-height:132px;resize:vertical}
+:is(.contact-efficiency-84,.products-one-page) form#request-form[data-request-form="87"] :is(input:not([type="checkbox"]),textarea,select):hover{border-color:var(--ink)}
+:is(.contact-efficiency-84,.products-one-page) form#request-form[data-request-form="87"] :is(input,textarea,select):focus-visible{border-color:var(--ink);outline:2px solid var(--ink);outline-offset:2px}
+:is(.contact-efficiency-84,.products-one-page) form#request-form[data-request-form="87"] [aria-invalid="true"]{border:2px solid var(--ink);padding:10px 13px;background:var(--canvas)}
+form#request-form[data-request-form="87"] :is(.field-help,.request-optional){font-size:14px;line-height:1.5;color:var(--muted)}
+form#request-form[data-request-form="87"] .field-help{max-width:65ch;margin:7px 0 0}
+form#request-form[data-request-form="87"] .field-error{margin-top:6px;font-size:15px;line-height:1.4}
+form#request-form[data-request-form="87"] #request-product-fields{grid-column:1/-1;margin:0 0 20px}
+form#request-form[data-request-form="87"] .request-disclosure{margin:0;border-top:1px solid var(--rule);border-bottom:0;padding:0;background:transparent}
+form#request-form[data-request-form="87"] .request-disclosure>summary{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:52px;margin:0;padding:12px 0;list-style:none;font-size:16px;line-height:1.5;font-weight:520;cursor:pointer}
+form#request-form[data-request-form="87"] .request-disclosure>summary::-webkit-details-marker{display:none}
+form#request-form[data-request-form="87"] .request-disclosure>summary:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+form#request-form[data-request-form="87"] .request-disclosure>summary:is(:hover,:focus-visible) .request-plus,
+form#request-form[data-request-form="87"] .request-disclosure[open]>summary .request-plus{color:var(--accent)}
+form#request-form[data-request-form="87"] .request-disclosure>div{padding:4px 0 18px}
+form#request-form[data-request-form="87"] .request-product-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 24px}
+form#request-form[data-request-form="87"] .product-options-group{min-width:0}
+form#request-form[data-request-form="87"] .product-options-group legend{max-width:100%;font-size:15px;line-height:1.4;font-weight:560;padding:0 0 7px;overflow-wrap:anywhere}
+:is(.contact-efficiency-84,.products-one-page) form#request-form[data-request-form="87"] label.request-option{display:flex;align-items:flex-start;gap:11px;min-height:44px;margin:0;padding:8px 0;font-weight:450;cursor:pointer}
+:is(.contact-efficiency-84,.products-one-page) form#request-form[data-request-form="87"] .request-option input[type="checkbox"]{display:block;appearance:auto;width:18px;max-width:18px;height:18px;min-height:18px;flex:0 0 18px;border:0;border-radius:0;padding:0;margin:3px 0 0;accent-color:var(--action,var(--ink))}
+form#request-form[data-request-form="87"] .request-option>span{display:block;min-width:0;font-size:16px;line-height:1.5;overflow-wrap:anywhere}
+form#request-form[data-request-form="87"] .request-option small{display:block;font-size:14px;line-height:1.45;font-weight:450;color:var(--muted);font-variant-numeric:tabular-nums}
+form#request-form[data-request-form="87"] .request-option:has(input:checked)>span{font-weight:550}
+form#request-form[data-request-form="87"] .request-option:is(:hover,:focus-within)>span{text-decoration:underline;text-decoration-thickness:1px;text-decoration-color:var(--rule);text-underline-offset:4px}
+form#request-form[data-request-form="87"] .request-context{margin:0 0 12px;padding:14px 0 0;background:transparent;border-top:1px solid var(--rule)}
+form#request-form[data-request-form="87"] .request-context h3{margin:0 0 6px;font-size:15px;line-height:1.4;font-weight:550;letter-spacing:0}
+form#request-form[data-request-form="87"] #request-context-list{margin:0;padding:0;list-style:none}
+form#request-form[data-request-form="87"] #request-context-list>li{min-width:0;margin:0;padding:8px 0;font-size:16px;line-height:1.5;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+form#request-form[data-request-form="87"] #request-context-list>li+li{border-top:1px solid var(--rule)}
+form#request-form[data-request-form="87"] .request-submit{padding-top:0}
+form#request-form[data-request-form="87"] .request-submit>.field-help{margin:12px 0 0}
+form#request-form[data-request-form="87"] .request-error-summary{padding-block:16px;margin-bottom:20px}
+form#request-form[data-request-form="87"] .action-primary{min-height:48px}
+form#request-form[data-request-form="87"] #request-review-text{min-height:320px}
+form#request-form[data-request-form="87"] .review-actions{gap:12px 24px}
+@media(max-width:600px){
+ form#request-form[data-request-form="87"] .request-fields-grid,
+ form#request-form[data-request-form="87"] .request-product-options{grid-template-columns:minmax(0,1fr);gap:0}
+ form#request-form[data-request-form="87"] .request-product-options{row-gap:18px}
+ form#request-form[data-request-form="87"] .request-wide{grid-column:auto}
+ form#request-form[data-request-form="87"] .request-disclosure>summary{gap:12px;font-size:15px}
+ form#request-form[data-request-form="87"] #request-review-text{min-height:300px}
+ form#request-form[data-request-form="87"] .review-actions{gap:8px 20px}
+}
