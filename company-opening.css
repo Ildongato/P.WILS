@@ -11,7 +11,7 @@
   align-items:start;
 }
 .company-opening-v47 .company-editorial-copy {
-  grid-column:1 / 5;
+  grid-column:1 / 6;
   min-width:0;
 }
 .company-opening-v47 .company-editorial-copy h2 {
@@ -46,7 +46,7 @@
   color:var(--muted);
 }
 .company-opening-v47 .company-editorial-portraits {
-  grid-column:5 / -1;
+  grid-column:6 / -1;
   min-width:0;
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));

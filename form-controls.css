@@ -1,0 +1,146 @@
+/* V101. Selected grouped fields in the existing Wils industrial system.
+   Shared by Contact, Producten and the retained request URL. */
+body.inner-page form#request-form:is([data-request-form],[data-default-department]){
+ --form-line:#858d8f;
+ --form-error:var(--action-hover,#b84300);
+ --form-radius:12px;
+}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-field{min-width:0;margin-bottom:20px}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) label{
+ display:block;margin-bottom:7px;color:var(--muted);font-size:14px;line-height:1.4;font-weight:450;
+}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) :is(input:not([type="checkbox"]),textarea,select){
+ box-sizing:border-box;display:block;width:100%;max-width:100%;min-height:52px;
+ margin:0;padding:13px 16px;border:1px solid var(--form-line);border-radius:var(--form-radius);
+ background-color:var(--surface);color:var(--ink);font:inherit;font-size:16px;line-height:1.5;
+ caret-color:var(--ink);box-shadow:none;
+ transition:border-color 180ms var(--ease-ui),background-color 180ms var(--ease-ui);
+}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) select:not([multiple]){
+ -webkit-appearance:none;appearance:none;height:52px;padding-inline-end:52px;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23171717' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+ background-repeat:no-repeat;background-size:18px 18px;background-position:right 18px center;
+ text-overflow:ellipsis;
+}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) textarea{min-height:136px;resize:vertical}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) :is(input,textarea)::placeholder{color:var(--muted);opacity:1}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) :is(input:not([type="checkbox"]),textarea,select):hover:not(:disabled){border-color:var(--ink)}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) :is(input,textarea,select):focus-visible{
+ border-color:var(--ink);outline:2px solid var(--ink);outline-offset:3px;background-color:var(--surface);box-shadow:none;
+}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) :is(input:not([type="checkbox"]),textarea,select)[aria-invalid="true"]{
+ border:1px solid var(--form-error);padding:13px 16px;background-color:var(--surface);
+ box-shadow:inset 0 0 0 1px var(--form-error);
+}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) select:not([multiple])[aria-invalid="true"]{padding-inline-end:52px}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) :is(input:not([type="checkbox"]),textarea,select):disabled{
+ color:var(--muted);background-color:var(--aluminium);border-color:var(--form-line);opacity:1;cursor:not-allowed;
+}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) :is(.field-help,.request-optional){font-size:13px;line-height:1.5;color:var(--muted)}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .field-help{margin-top:8px;max-width:65ch;overflow-wrap:anywhere}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) label>span[aria-hidden="true"]{color:var(--ink)}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .field-error{color:var(--form-error);margin:8px 0 0;font-size:14px;line-height:1.5;font-weight:520}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-error-summary{
+ margin-bottom:20px;padding-block:16px;border-block:1px solid var(--form-error);font-size:15px;line-height:1.5;
+}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-error-summary a{text-decoration:underline;text-underline-offset:4px}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-disclosure>summary{
+ min-height:52px;padding-block:12px;font-size:16px;line-height:1.5;
+}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-disclosure>summary:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-disclosure[open]>summary .request-plus{color:var(--accent)}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) label.request-option{
+ display:flex;align-items:flex-start;gap:12px;min-height:44px;margin:0;padding:8px 0;font-weight:450;cursor:pointer;
+}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-option input[type="checkbox"]{
+ appearance:auto;-webkit-appearance:checkbox;box-sizing:border-box;width:18px;max-width:18px;height:18px;min-height:18px;
+ flex:0 0 18px;margin:3px 0 0;padding:0;border:0;border-radius:0;accent-color:var(--ink);
+}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-option:has(input:checked)>span{font-weight:550}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-submit .action-primary{min-height:52px}
+@media(max-width:600px){
+ body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-disclosure>summary{gap:12px}
+ body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-disclosure>summary small{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){
+ body.inner-page form#request-form:is([data-request-form],[data-default-department]) :is(input:not([type="checkbox"]),textarea,select){transition:none}
+}
+@media(forced-colors:active){
+ body.inner-page form#request-form:is([data-request-form],[data-default-department]) select:not([multiple]){
+  -webkit-appearance:auto;appearance:auto;background-image:none;padding-inline-end:16px;
+ }
+ body.inner-page form#request-form:is([data-request-form],[data-default-department]) select:not([multiple])[aria-invalid="true"]{padding-inline-end:16px}
+ body.inner-page form#request-form:is([data-request-form],[data-default-department]) :is(input,textarea,select):focus-visible,
+ body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-disclosure>summary:focus-visible{outline-color:Highlight}
+ body.inner-page form#request-form:is([data-request-form],[data-default-department]) :is(input:not([type="checkbox"]),textarea,select)[aria-invalid="true"]{border:2px solid CanvasText;box-shadow:none}
+}
+
+/* V101 grouped cells. Only the main shared forms get the new envelope;
+   the retained request keeps its existing structure and the same 12px controls. */
+body.inner-page form#request-form[data-request-form] .request-contact-group{
+ grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;
+ min-width:0;margin:0 0 20px;border:1px solid var(--form-line);border-radius:var(--form-radius);
+ overflow:hidden;overflow:clip;background:var(--surface);
+}
+body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field{
+ min-width:0;position:relative;margin:0;padding:11px 14px 9px;border-bottom:1px solid var(--rule);
+}
+body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:nth-child(odd){border-right:1px solid var(--rule)}
+body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:nth-last-child(-n+2){border-bottom:0}
+body.inner-page form#request-form[data-request-form] .request-contact-group label,
+body.inner-page form#request-form[data-request-form] .request-message-panel>label{
+ font-size:12px;line-height:1.4;font-weight:450;margin:0 0 3px;color:var(--muted);
+}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-optional{font-size:12px;font-weight:400}
+body.inner-page form#request-form[data-request-form] .request-contact-group input{
+ min-height:30px;height:30px;padding:3px 0;border:0;border-radius:2px;background:transparent;box-shadow:none;
+}
+body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:focus-within{background:var(--canvas)}
+/* The complete cell owns the visible 2px keyboard focus indicator. */
+body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:focus-within::before{
+ content:'';position:absolute;inset:0;border:2px solid var(--ink);pointer-events:none;z-index:1;
+}
+body.inner-page form#request-form[data-request-form] .request-contact-group input:focus-visible{outline:0;box-shadow:none}
+body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:first-child::before{border-top-left-radius:11px}
+body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:nth-child(2)::before{border-top-right-radius:11px}
+body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:nth-child(3)::before{border-bottom-left-radius:11px}
+body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:last-child::before{border-bottom-right-radius:11px}
+body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:has([aria-invalid="true"])::before{
+ content:'';position:absolute;inset:0;border:2px solid var(--form-error);pointer-events:none;
+}
+body.inner-page form#request-form[data-request-form] .request-contact-group input[aria-invalid="true"]{border:0;padding:3px 0;box-shadow:none}
+body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:focus-within>label{color:var(--ink)}
+body.inner-page form#request-form[data-request-form] .request-message-panel{
+ padding:13px 15px 10px;border:1px solid var(--form-line);border-radius:var(--form-radius);background:var(--surface);
+}
+body.inner-page form#request-form[data-request-form] .request-message-panel #request-message{
+ height:114px;min-height:94px;padding:4px 0;border:0;border-radius:2px;background:transparent;box-shadow:none;
+}
+body.inner-page form#request-form[data-request-form] .request-message-panel:focus-within{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);background:var(--canvas)}
+body.inner-page form#request-form[data-request-form] .request-message-panel #request-message:focus-visible{outline:0;box-shadow:none}
+body.inner-page form#request-form[data-request-form] .request-message-panel:has([aria-invalid="true"]){border-color:var(--form-error);box-shadow:inset 0 0 0 1px var(--form-error)}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-input-wrap{position:relative;width:100%;min-width:0}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-input-wrap>#request-email{padding-inline-end:46px}
+body.inner-page form#request-form[data-request-form] .request-contact-group .request-input-wrap>#request-email{padding-inline-end:28px}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-email-check{
+ position:absolute;right:15px;top:50%;transform:translateY(-50%);width:18px;height:18px;pointer-events:none;
+ background:center/18px 18px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23171717' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m20 6-11 11-5-5'/%3E%3C/svg%3E");
+}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-email-check[hidden]{display:none!important}
+body.inner-page form#request-form[data-request-form] .request-contact-group .request-email-check{right:0}
+body.inner-page form#request-form:is([data-request-form],[data-default-department]) ::selection{background:rgba(255,65,8,.2);color:var(--ink)}
+@media(max-width:600px){
+ body.inner-page form#request-form[data-request-form] .request-contact-group{grid-template-columns:minmax(0,1fr)}
+ body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:nth-child(n){border-right:0;border-bottom:1px solid var(--rule)}
+ body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:last-child{border-bottom:0}
+ body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:nth-child(n)::before{border-radius:0}
+ body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:first-child::before{border-top-left-radius:11px;border-top-right-radius:11px}
+ body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:last-child::before{border-bottom-left-radius:11px;border-bottom-right-radius:11px}
+}
+@media(forced-colors:active){
+ body.inner-page form#request-form[data-request-form] :is(.request-contact-group,.request-message-panel){border-color:CanvasText}
+ body.inner-page form#request-form[data-request-form] .request-contact-group>.request-field:focus-within::before{border-color:Highlight}
+ body.inner-page form#request-form[data-request-form] .request-contact-group input:focus-visible,
+ body.inner-page form#request-form[data-request-form] .request-message-panel #request-message:focus-visible{outline:2px solid Highlight;outline-offset:0}
+ body.inner-page form#request-form:is([data-request-form],[data-default-department]) .request-email-check{display:none!important}
+}

@@ -6,13 +6,14 @@
 .mobile-menu>.nav-link:is(:hover,:focus-visible){text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:6px}
 /* Language is a secondary menu utility, never a fifth main navigation item. */
 .mobile-language{padding-top:16px}
-.mobile-language-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
-.mobile-language-label{display:inline-flex;align-items:center;gap:10px;color:var(--muted);font-size:16px;line-height:1.4;white-space:nowrap}
+.mobile-language-row{display:flex;align-items:center;justify-content:flex-start;gap:14px}
+.mobile-language-icon{display:inline-flex;align-items:center;flex:none;color:var(--muted)}
 .site-header .mobile-language .language-globe{width:20px;height:20px;flex:none}
-.mobile-language-options{display:flex;align-items:center;gap:24px}
+.mobile-language-options{display:flex;align-items:center;gap:16px}
+.mobile-language-options a{min-width:44px;justify-content:flex-start}
 .mobile-menu .mobile-language a{display:inline-flex;align-items:center;min-height:44px;padding:8px 0;border:0;font-size:16px;line-height:1.4;letter-spacing:-.01em}
 .mobile-language-options a[aria-current=true]{font-weight:600;gap:8px}
-.mobile-language-options a[aria-current=true]::after{content:"";width:6px;height:6px;flex:none;border-radius:50%;background:var(--accent)}
+.mobile-language-options a[aria-current=true]::before{content:"";width:6px;height:6px;flex:none;border-radius:50%;background:var(--accent)}
 .mobile-menu .mobile-language-pdf{color:var(--muted);text-decoration:underline;text-decoration-color:var(--rule);text-underline-offset:5px}
 .mobile-menu .mobile-language a:is(:hover,:focus-visible){text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:5px}
 .mobile-menu .mobile-language a:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
@@ -23,7 +24,7 @@
  .ui-enhanced .site-header .header-inner>.language-return{display:none}
  .ui-enhanced .site-header .header-inner>.menu-toggle{margin-left:auto}
 }
-@media(max-width:360px){.header-inner{gap:14px}.mobile-menu>.nav-link{font-size:18px}.mobile-language-options{gap:16px}.mobile-language-label{gap:8px}}
+@media(max-width:360px){.header-inner{gap:14px}.mobile-menu>.nav-link{font-size:18px}.mobile-language-options{gap:16px}}
 /* Without scripting, show the four ordinary links directly. */
 @media(max-width:1100px){
  html:not(.ui-enhanced) .site-header{height:auto}

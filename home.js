@@ -26,14 +26,24 @@
   const heroContent = $('.hero-content');
   const scrollCue = $('.hero-scroll');
   let cueHint = null, cueHintTimer = 0, cueHintPlayed = false;
+  let cueProgress = '', cueAway = null;
   function stopCueHint() {
     clearTimeout(cueHintTimer); cueHintTimer = 0;
     cueHint?.cancel(); cueHint = null;
   }
   function syncScrollCue() {
-    const away = scrollY > 56 || entryState !== 'ready';
-    scrollCue.classList.toggle('is-scrolled', away);
-    scrollCue.inert = away;
+    const progress = reduced.matches ? 0 : Math.max(0, Math.min(1, (scrollY - 12) / 100));
+    const value = (progress * progress * (3 - 2 * progress)).toFixed(4);
+    if (value !== cueProgress) {
+      scrollCue.style.setProperty('--cue-progress', value);
+      cueProgress = value;
+    }
+    const away = entryState !== 'ready' || (reduced.matches ? scrollY > 56 : progress === 1);
+    if (away !== cueAway) {
+      scrollCue.classList.toggle('is-scrolled', away);
+      scrollCue.inert = away;
+      cueAway = away;
+    }
     if (away || scrollY > 4) stopCueHint();
   }
   function inviteScroll() {
@@ -60,6 +70,7 @@
   const homeRegions = [headerNode, heroContent, $('.skip-link'), ...$$('main > section:not(.intro-scene)')].filter(Boolean);
   let entryState = root.classList.contains('entry-pending') ? 'entry' : 'ready';
   let entryMotion;
+  let entrySerial = 0, entryWatchdog = 0, entryReturnCover = null, entryReturnFocus = false;
   let mediaVisible = true;
   root.dataset.entryController = 'active';
   // The opaque product surface decides when the header needs a filled background.
@@ -107,9 +118,26 @@
       ...$$('.hero-title .line-mask > span'), $('.hero-lead'), $('.hero-description'), $('.hero-action'),
       scrollCue],
     { clearProps: 'transform,opacity,visibility,clipPath' });
+    gsap.set([$('.hero-reading-shade'), $('.hero-entry-shade')], { clearProps: 'opacity,transition' });
+  }
+  function cancelEntryMotion() {
+    ++entrySerial;
+    clearTimeout(entryWatchdog); entryWatchdog = 0;
+    entryMotion?.kill(); entryMotion = null;
+    entryReturnCover?.remove(); entryReturnCover = null;
+  }
+  function settleEntryGate({ focus = false } = {}) {
+    cancelEntryMotion(); clearEntryStyles();
+    entryState = 'entry'; root.dataset.entryState = 'entry';
+    root.classList.remove('entry-entering'); root.classList.add('entry-pending');
+    gate.hidden = false; gate.inert = false; setHomeAvailable(false);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    scheduleHeaderSurface(); syncMedia();
+    if (focus && !document.hidden) $('[data-entry-language="nl"]').focus({ preventScroll: true });
   }
   function finishEntry({ focus = false } = {}) {
-    entryMotion?.kill(); entryMotion = null;
+    cancelEntryMotion();
+    entryReturnFocus = false;
     entryState = 'ready'; root.dataset.entryState = 'ready';
     root.classList.remove('entry-pending', 'entry-entering');
     gate.hidden = true; gate.inert = true;
@@ -124,17 +152,69 @@
     scheduleHeaderSurface();
     inviteScroll();
   }
-  function openEntry({ write = false, focus = false } = {}) {
+  function openEntry({ write = false, focus = false, motion = false } = {}) {
     stopCueHint();
     if (root.classList.contains('ui-enhanced')) setMenu(false);
-    entryMotion?.kill(); entryMotion = null;
-    clearEntryStyles(); entryState = 'entry'; root.dataset.entryState = 'entry';
-    root.classList.remove('entry-entering'); root.classList.add('entry-pending');
-    gate.hidden = false; gate.inert = false; setHomeAvailable(false);
-    if (write) history.pushState(null, '', location.pathname + location.search);
-    window.scrollTo({ top: 0, behavior: 'instant' });
-    scheduleHeaderSurface();
-    if (focus) $('[data-entry-language="nl"]').focus({ preventScroll: true });
+    entryReturnFocus = entryReturnFocus || focus;
+    if (write && location.hash) history.pushState(null, '', location.pathname + location.search);
+    if (entryState === 'returning') return;
+    if (!motion || entryState === 'entry' || reduced.matches || document.hidden || !window.gsap) {
+      settleEntryGate({ focus: entryReturnFocus }); entryReturnFocus = false; return;
+    }
+    // At the hero, only the reading layers change over the surviving video.
+    // Deeper in the document, obscure the old viewport before the instant jump.
+    const fromDeep = scrollY > 56;
+    const alpha = node => parseFloat(getComputedStyle(node).opacity) || 0;
+    const headerAlpha = alpha(headerNode), contentAlpha = alpha(heroContent);
+    const readingShade = $('.hero-reading-shade'), entryShade = $('.hero-entry-shade');
+    const readingAlpha = alpha(readingShade), entryAlpha = alpha(entryShade);
+    cancelEntryMotion(); clearEntryStyles();
+    const token = entrySerial;
+    entryState = 'returning'; root.dataset.entryState = 'returning'; setHomeAvailable(false);
+    const complete = () => {
+      if (token !== entrySerial) return;
+      const focusGate = entryReturnFocus; entryReturnFocus = false;
+      settleEntryGate({ focus: focusGate });
+    };
+    const prepare = () => {
+      if (token !== entrySerial) return;
+      gsap.set([readingShade, entryShade], { transition: 'none' });
+      gsap.set(readingShade, { opacity: fromDeep ? 0 : readingAlpha });
+      gsap.set(entryShade, { opacity: fromDeep ? 1 : entryAlpha });
+      gsap.set(headerNode, { autoAlpha: fromDeep ? 0 : headerAlpha });
+      gsap.set(heroContent, { autoAlpha: fromDeep ? 0 : contentAlpha });
+      gsap.set(gate, { autoAlpha: 0 });
+      root.classList.remove('entry-entering'); root.classList.add('entry-pending');
+      gate.hidden = false; gate.inert = true;
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      scheduleHeaderSurface(); syncMedia();
+    };
+    try {
+      if (fromDeep) {
+        entryReturnCover = document.createElement('div');
+        entryReturnCover.setAttribute('aria-hidden', 'true');
+        entryReturnCover.dataset.entryReturnCover = '';
+        Object.assign(entryReturnCover.style, { position: 'fixed', inset: '0', zIndex: '2147483646', background: 'var(--ink, #171717)', opacity: '0', pointerEvents: 'auto' });
+        document.body.append(entryReturnCover);
+        const cover = entryReturnCover;
+        entryMotion = gsap.timeline({ onComplete: complete })
+          .to(cover, { opacity: 1, duration: .12, ease: 'power2.out' }, 0)
+          .call(prepare, [], .12)
+          .to(cover, { opacity: 0, duration: .20, ease: 'power2.out' }, .12)
+          .to(gate, { autoAlpha: 1, duration: .20, ease: 'power2.out' }, .12)
+          .fromTo($('.entry-choice-panel'), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: .20, ease: 'power3.out' }, .12);
+      } else {
+        prepare();
+        entryMotion = gsap.timeline({ onComplete: complete })
+          .to([headerNode, heroContent], { autoAlpha: 0, duration: .18, ease: 'power2.out' }, 0)
+          .to(readingShade, { opacity: 0, duration: .32, ease: 'power2.out' }, 0)
+          .to(entryShade, { opacity: 1, duration: .32, ease: 'power2.out' }, 0)
+          .to(gate, { autoAlpha: 1, duration: .20, ease: 'power2.out' }, .10)
+          .fromTo($('.entry-choice-panel'), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: .22, ease: 'power3.out' }, .10);
+      }
+      // Hidden tabs, cancelled frames or a stopped animation never leave a veil.
+      entryWatchdog = setTimeout(complete, 520);
+    } catch { complete(); }
   }
   function chooseLanguage(event) {
     event.preventDefault();
@@ -146,7 +226,10 @@
     root.classList.add('entry-entering'); gate.inert = true;
     if (reduced.matches || !window.gsap) { finishEntry({ focus: true }); return; }
     try {
-      entryMotion = gsap.timeline({ onComplete: () => finishEntry({ focus: true }) });
+      cancelEntryMotion();
+      const token = entrySerial;
+      const complete = () => { if (token === entrySerial) finishEntry({ focus: true }); };
+      entryMotion = gsap.timeline({ onComplete: complete });
       entryMotion.to($('.entry-choice-panel'), { opacity: 0, y: -6, duration: .18, ease: 'power2.in' }, 0)
         .to(gate, { opacity: 0, duration: .26, ease: 'power2.out' }, .08)
         .fromTo(headerNode, { autoAlpha: 0 }, { autoAlpha: 1, duration: .26, ease: 'power2.out' }, .08)
@@ -155,22 +238,33 @@
         .fromTo('.hero-description', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .42, ease: 'power3.out' }, .40)
         .fromTo('.hero-action', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: .40, ease: 'power3.out' }, .52)
         .fromTo(scrollCue, { opacity: 0 }, { opacity: 1, duration: .36, ease: 'power3.out' }, .64);
+      entryWatchdog = setTimeout(complete, 1200);
     } catch { finishEntry({ focus: true }); }
   }
   $$('[data-entry-language]').forEach(link => link.addEventListener('click', chooseLanguage));
   languageReturns.forEach(link => link.addEventListener('click', event => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
-    openEntry({ write: true, focus: true });
+    openEntry({ write: true, focus: true, motion: true });
   }));
   function routeEntry() {
-    if (!location.hash) openEntry();
+    if (!location.hash) openEntry({ motion: true });
     else if (entryState !== 'ready') finishEntry();
   }
   addEventListener('popstate', routeEntry);
   addEventListener('hashchange', routeEntry);
-  addEventListener('resize', () => { if (entryState === 'entering') finishEntry({ focus: true }); }, { passive: true });
-  reduced.addEventListener('change', () => { if (entryState === 'entering') finishEntry({ focus: true }); syncMedia(); });
+  function settleEntryInterruption() {
+    if (entryState === 'returning') { const focusGate = entryReturnFocus; entryReturnFocus = false; settleEntryGate({ focus: focusGate }); }
+    else if (entryState === 'entering') finishEntry();
+  }
+  addEventListener('resize', settleEntryInterruption, { passive: true });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) settleEntryInterruption(); });
+  addEventListener('pagehide', settleEntryInterruption);
+  addEventListener('pageshow', event => { if (event.persisted) { routeEntry(); syncMedia(); } });
+  addEventListener('wils:page-arrival', () => {
+    if (root.dataset.wilsPageArrival === 'home' && location.hash === '#intro') finishEntry();
+  });
+  reduced.addEventListener('change', () => { settleEntryInterruption(); syncMedia(); });
   if (entryState === 'entry') openEntry(); else finishEntry();
   syncMedia();
   syncHeaderSurface();
@@ -410,7 +504,8 @@
     const next = $('img', source);
     const stage = $('.history-image-stage', sharedHistoryVisual);
     const image = $('img', stage);
-    $('figcaption', sharedHistoryVisual).textContent = $('figcaption', source).textContent;
+    const caption = $('figcaption', sharedHistoryVisual), nextCaption = $('figcaption', source).textContent;
+    if (caption.textContent !== nextCaption) caption.textContent = nextCaption;
     // Repeated selection keeps the current photograph and its stable frame.
     if (image.getAttribute('src') === next.getAttribute('src')) { syncHistoryAtmosphere(image); return; }
     const token = ++historyImageToken;
@@ -447,7 +542,7 @@
   progressLine.setAttribute('aria-hidden', 'true');
   yearRail.append(progressLine);
   let currentYear = '1957', storyMode = false, compactMode = false, historyScroll = null;
-  const initialHistoryHash = /^#history-(1957|1960|1998|2026)$/.test(location.hash) ? location.hash : null;
+  const initialHistoryHash = yearPanels.some(panel => '#history-' + panel.dataset.historyPanel === location.hash) ? location.hash : null;
   let historyRouteReady = false;
   let historyRouteFrame = 0, restoringHistoryRoute = false;
   let requestedYearPosition = null;
@@ -486,7 +581,7 @@
     const end = historyRailGeometry[lower] +
       (historyRailGeometry[upper] - historyRailGeometry[lower]) * (position - lower);
     progressLine.style.transform = `translate3d(${start.toFixed(3)}px,0,0) scaleX(${(end - start).toFixed(3)})`;
-    yearRail.dataset.stationYear = currentYear;
+    if (yearRail.dataset.stationYear !== currentYear) yearRail.dataset.stationYear = currentYear;
   }
   function requestHistoryRail() {
     historyRailGeometry = null;
@@ -524,16 +619,22 @@
       if (historyTextMotion === transition) historyTextMotion = null;
     });
   }
+  let historySelectionMode = null;
   function selectYear(year, { motion = false, railPosition = null } = {}) {
     const target = yearPanels.find(p => p.dataset.historyPanel === year);
     if (!target) return;
     const changed = currentYear !== year;
+    const mode = storyMode ? 'story' : compactMode ? 'compact' : 'flow';
+    const selectedIndex = yearPanels.indexOf(target);
+    historyRailPosition = Number.isFinite(railPosition) ? railPosition : selectedIndex;
+    // Scroll progress keeps moving between stations. Panel text, image and
+    // accessibility state only change at a station or responsive mode change.
+    if (!changed && historySelectionMode === mode) { paintHistoryRail(); return; }
+    historySelectionMode = mode;
     const direction = Number(year) >= Number(currentYear) ? 1 : -1;
     if (changed || !motion) clearHistoryTextMotion();
     settleHistoryText(target);
     currentYear = year;
-    const selectedIndex = yearPanels.indexOf(target);
-    historyRailPosition = Number.isFinite(railPosition) ? railPosition : selectedIndex;
     yearTabs.forEach((tab, index) => {
       const selected = tab.dataset.year === year;
       tab.dataset.historyReached = String(index <= selectedIndex);
@@ -594,6 +695,10 @@
   }
   function updateFlowHistory() {
     if (storyMode || compactMode || restoringHistoryRoute) return;
+    const bounds = historyChapter.getBoundingClientRect();
+    // Outside the chapter there is no reading progress to compute. In
+    // particular, do not measure every future panel throughout the page.
+    if (bounds.top >= innerHeight || bounds.bottom <= 0) return;
     const header = parseFloat(getComputedStyle(root).getPropertyValue('--header-h')) || 0;
     const stickyTop = parseFloat(getComputedStyle(yearRail).top);
     const readAt = (Number.isFinite(stickyTop) ? stickyTop : header) + yearRail.getBoundingClientRect().height + 24;
@@ -604,7 +709,6 @@
     const fraction = index < tops.length - 1 ? Math.max(0, Math.min(1, (readAt - tops[index]) / Math.max(1, distance))) : 0;
     const year = yearPanels[index].dataset.historyPanel;
     selectYear(year, { railPosition: index + fraction });
-    const bounds = historyChapter.getBoundingClientRect();
     if (historyRouteReady && bounds.top <= header && bounds.bottom > readAt && location.hash !== '#history-' + year) {
       history.replaceState(history.state, '', '#history-' + year);
     }
@@ -627,7 +731,7 @@
     finishRevealsWithin(panel);
     if (storyMode && historyScroll) {
       const i = yearPanels.indexOf(panel);
-      const position = historyScroll.start + historyScroll.vars.storyDistance() * ((i + .14) / 4);
+      const position = historyScroll.start + historyScroll.vars.storyDistance() * ((i + .14) / yearPanels.length);
       requestedYearPosition = position;
       // The frame is already sticky: jump only its invisible scroll position.
       // The authored text/image transition supplies the visible continuity.
@@ -724,7 +828,7 @@
   function restoreHistoryRoute() {
     cancelHistoryRouteRestore();
     const hash = location.hash;
-    restoringHistoryRoute = /^#history-(1957|1960|1998|2026)$/.test(hash);
+    restoringHistoryRoute = yearPanels.some(panel => '#history-' + panel.dataset.historyPanel === hash);
     applyRoute(false);
     if (!restoringHistoryRoute) return;
     // Back/forward can restore a native scroll position after popstate. Keep
@@ -782,9 +886,17 @@
       let layoutFrame = 0;
       requestLayout = () => {
         cancelAnimationFrame(layoutFrame);
-        layoutFrame = requestAnimationFrame(() => { measureHistory(); ScrollTrigger.refresh(); });
+        // refreshInit already owns measurement. Measuring here as well doubles
+        // the layout reads and sheet geometry writes in the same frame.
+        layoutFrame = requestAnimationFrame(() => { layoutFrame = 0; ScrollTrigger.refresh(); });
       };
-      const resizeObserver = new ResizeObserver(() => requestLayout());
+      let measuredFrameWidth = frame.clientWidth, measuredFrameHeight = frame.clientHeight;
+      const resizeObserver = new ResizeObserver(() => {
+        const width = frame.clientWidth, height = frame.clientHeight;
+        if (width === measuredFrameWidth && height === measuredFrameHeight) return;
+        measuredFrameWidth = width; measuredFrameHeight = height;
+        requestLayout();
+      });
       resizeObserver.observe(frame);
       function renderHistory(self) {
         updateHistoryExit(self.progress);
@@ -794,7 +906,7 @@
           if (Math.abs(scrollY - requestedYearPosition) > 4) return;
           requestedYearPosition = null;
         }
-        const index = Math.min(3, Math.floor(self.progress * 4));
+        const index = Math.min(yearPanels.length - 1, Math.floor(self.progress * yearPanels.length));
         const year = yearPanels[index].dataset.historyPanel;
         selectYear(year, { motion: self.isActive, railPosition: self.progress * yearPanels.length });
         if (historyRouteReady && self.isActive && location.hash !== '#history-' + year) history.replaceState(history.state, '', '#history-' + year);
@@ -993,7 +1105,9 @@
         finishRevealsWithin = () => {}; finishPassedReveals = () => {}; cleanups.forEach(fn => fn());
       };
     });
-    document.fonts.ready.then(() => { requestLayout(); refresh(); if (!interacted && location.hash) applyRoute(true); });
+    // refreshInit performs the history measurement; font readiness needs one
+    // refresh, not an immediate refresh plus a second queued requestLayout.
+    document.fonts.ready.then(() => { refresh(); if (!interacted && location.hash) applyRoute(true); });
   }
   applyRoute(true);
   // Native fragment scrolling may run after the first frame, especially after

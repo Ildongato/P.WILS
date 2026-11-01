@@ -12,7 +12,7 @@
   const groups = body.hasAttribute('data-site-motion-page') ? [] : [...document.querySelectorAll('[data-opening-group]')];
   const seen = new WeakSet();
   const running = new Map();
-  let frame = 0, headerHeight = 0, barHeight = 0, current = null, railBusyUntil = 0;
+  let frame = 0, headerHeight = 0, barHeight = 0, current = null, railBusyUntil = 0, layoutDirty = true;
 
   function measure() {
     const h = header?.getBoundingClientRect().height || 80;
@@ -23,6 +23,7 @@
     }
     // CSS owns the responsive rail height; reading it avoids a circular inline override.
     barHeight = b;
+    layoutDirty = false;
     return h + b;
   }
   function headingFor(target) {
@@ -40,9 +41,11 @@
     if (delta) nav.scrollTo({left:nav.scrollLeft + delta, behavior:'instant'});
   }
   function select(item) {
+    if (item === current) return;
     for (const link of links) {
-      if (link === item?.link) link.setAttribute('aria-current','location');
-      else link.removeAttribute('aria-current');
+      if (link === item?.link) {
+        if (link.getAttribute('aria-current') !== 'location') link.setAttribute('aria-current','location');
+      } else if (link.hasAttribute('aria-current')) link.removeAttribute('aria-current');
     }
     if (item !== current) {
       current = item;
@@ -51,7 +54,7 @@
   }
   function update() {
     frame = 0;
-    const offset = measure();
+    const offset = layoutDirty ? measure() : headerHeight + barHeight;
     // Read within the free viewport, rather than the seam above a section's padding.
     const line = offset + Math.min(120, Math.max(24, (innerHeight - offset) * .16));
     const positions = items.map(item => ({item, top:item.target.getBoundingClientRect().top})).sort((a,b) => a.top-b.top);
@@ -62,7 +65,7 @@
     select(active);
   }
   function schedule() { if (!frame) frame = requestAnimationFrame(update); }
-  function layoutChanged() { current = null; schedule(); }
+  function layoutChanged() { layoutDirty = true; current = null; schedule(); }
   function focusTarget(node) {
     if (!node.hasAttribute('tabindex')) {
       node.setAttribute('tabindex','-1');

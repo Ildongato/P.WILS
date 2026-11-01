@@ -1,0 +1,51 @@
+/* Same full-bleed aluminium/photo relationship as the home production band.
+   Wrappers are unstyled at tablet/phone sizes, retaining the existing layout. */
+@media screen and (min-width:1001px){
+ .grid-system-115.company-page #productie.company-evidence{padding-block:0}
+ .grid-system-115.company-page .company-production-intro{
+  position:relative;isolation:isolate;overflow:hidden;
+  display:grid;align-items:center;min-height:clamp(420px,31vw,460px);
+  padding-block:48px;background:var(--aluminium);
+ }
+ .grid-system-115.company-page .company-production-intro>.page-wrap{
+  display:grid;grid-template-columns:var(--grid-main-columns);
+  column-gap:var(--grid-main-gap);row-gap:20px;align-content:center;
+ }
+ .grid-system-115.company-page .company-production-intro .chapter-head{
+  grid-column:1/6;position:relative;z-index:1;min-width:0;margin:0;
+ }
+ .grid-system-115.company-page .company-production-intro h2{
+  font-size:clamp(34px,3.1vw,44px);line-height:1.12;margin:0;
+ }
+ .grid-system-115.company-page .company-production-intro .company-production-grid{display:contents}
+ .grid-system-115.company-page .company-production-intro .company-production-copy{
+  grid-column:1/6;position:relative;z-index:1;min-width:0;
+ }
+ .grid-system-115.company-page .company-production-copy p{font-size:18px;line-height:1.5}
+ .grid-system-115.company-page .company-production-intro .company-photo-request{
+  position:absolute;z-index:0;inset:0 0 0 auto;width:58%;height:100%;
+  max-width:none;min-width:0;margin:0;
+ }
+ .grid-system-115.company-page[data-industrial-imagery="72"] .company-production-intro .company-workfloor-media{
+  width:100%;height:100%;aspect-ratio:auto;border-radius:0;background:var(--aluminium);
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 28%);
+  mask-image:linear-gradient(to right,transparent,#000 28%);
+ }
+ .grid-system-115.company-page .company-production-intro .company-workfloor-media img{
+  width:100%;height:100%;aspect-ratio:auto;max-width:none;
+  object-fit:cover;object-position:50% 50%;border-radius:0;
+ }
+ .grid-system-115.company-page .company-production-intro figcaption{
+  position:absolute;right:var(--gutter);bottom:16px;max-width:none;margin:0;
+  padding:8px 12px;background:var(--canvas);color:var(--muted);
+  font-size:12px;line-height:1.4;
+ }
+ .grid-system-115.company-page .company-production-facts{padding-bottom:48px}
+ .grid-system-115.company-page .company-production-facts>.company-evidence-register{
+  margin-top:0;
+ }
+}
+@media screen and (min-width:1001px) and (max-width:1100px){
+ .grid-system-115.company-page .company-production-intro .company-photo-request{width:54%}
+ .grid-system-115.company-page .company-production-copy p{font-size:17px}
+}

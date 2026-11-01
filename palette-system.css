@@ -1,0 +1,92 @@
+/* V91: approved 'Scherper sectieritme'. Colour roles only; existing geometry,
+   photography, chapter covers, timelines and interaction owners are preserved. */
+@media screen{
+  :root{
+    --canvas:#f4f5f5;
+    --surface:#fff;
+    --aluminium:#e1e4e4;
+    --rule:#cbd0d0;
+    --rule-on-steel:#bac0c1;
+    --graphite:#252a2b;
+  }
+
+  /* Light registers and historical reading keep the same underlying canvas. */
+  .products-chapter:not([data-sheet]),
+  .products-chapter>.chapter-frame,
+  .history-chapter:not([data-sheet]),
+  .history-chapter>.chapter-frame,
+  .products-one-page .pg-catalogue,
+  .inner-page .company-history{
+    background:var(--canvas);
+  }
+
+  /* News is a quiet white register before the one graphite closing surface. */
+  .quality-chapter,
+  .quality-chapter>.chapter-frame,
+  .news-chapter:not([data-sheet]),
+  .news-chapter>.chapter-frame,
+  .inner-page .company-people,
+  .inner-page .quality-documents,
+  .inner-page .quality-service,
+  .products-one-page .pg-inquiry{
+    background:var(--surface);
+  }
+
+  /* Steel is reserved for production and supporting process information. */
+  .company-chapter,
+  .inner-page .company-evidence,
+  .products-one-page .pg-execution,
+  .quality-structure-81 .quality-process{
+    --rule:var(--rule-on-steel);
+    background:var(--aluminium);
+  }
+  .company-chapter>.chapter-frame{background:var(--aluminium)}
+
+  /* This opaque, independently sourced map retains its existing cartography. */
+  .contact-route .route-map-frame{--canvas:#f0f0f0}
+}
+
+/* Shared footer source uses its light logo on screen; ink remains printable. */
+@media print{
+  .closing-chapter .footer-brand img{filter:brightness(0)}
+}
+
+/* V91: the compact closing section receives the approved graphite surface.
+   Colour only: existing layout, type, radii, disclosure and motion stay intact. */
+@media screen{
+.closing-chapter{
+  --ink:#f4f5f5;
+  --muted:#b9c0c1;
+  --canvas:#252a2b;
+  --surface:#252a2b;
+  --aluminium:#252a2b;
+  --rule:#4f5758;
+  --footer-rule:#5d6667;
+  --action-contour:#a0a8a9;
+  color:var(--ink);
+}
+.closing-chapter:not([data-sheet]),
+.inner-page .closing-chapter,
+.closing-chapter>.chapter-frame,
+.inner-page .closing-chapter>.chapter-frame{
+  background:#252a2b;
+}
+/* The outgoing sheet must retain its original darkening, not inherit white ink. */
+.closing-chapter>.chapter-frame::after{background:#171717}
+.closing-chapter .closing-pig{color:#343b3c}
+.closing-chapter .action-primary{
+  --cta-ink:#f4f5f5;
+  --cta-contour:#a0a8a9;
+  --cta-fill:rgba(244,245,245,.07);
+  --cta-pressed:rgba(244,245,245,.12);
+  --cta-dot:var(--accent);
+}
+.closing-chapter :is(.contact-register a,.footer-nav a,.language-pdf-grid a){
+  text-decoration-color:#9da7a8;
+}
+.closing-chapter :is(.contact-register a,.footer-nav a,.language-pdf-grid a):is(:hover,:focus-visible,[aria-current]){
+  text-decoration-color:var(--accent);
+}
+.closing-chapter :focus-visible{outline-color:var(--ink)}
+.closing-chapter ::selection{background:var(--accent);color:#171717}
+}

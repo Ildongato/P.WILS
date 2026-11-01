@@ -34,6 +34,11 @@
   snapNext=false;
  }
  function schedule(snap=false){snapNext=snapNext||snap;if(!frame)frame=requestAnimationFrame(()=>draw())}
+ function snapForPageCapture(){
+  if(frame)cancelAnimationFrame(frame);
+  frame=0;snapNext=false;primed=true;
+  draw(true);
+ }
  function primePrevious(value){
   if(primed||reduced.matches||!wide.matches||!activeLink())return;
   const previousPath=urlPath(value);
@@ -54,8 +59,13 @@
  if(nav&&links.length){
   marker=document.createElement('span');marker.className='nav-active-marker';marker.setAttribute('aria-hidden','true');nav.append(marker);
   const navigationType=performance.getEntriesByType?.('navigation')?.[0]?.type;
-  if(navigationType!=='reload')primePrevious(window.navigation?.activation?.from?.url||document.referrer);
-  if(!primed)draw(true);
+  if(root.dataset.wilsPageArrival)snapForPageCapture();
+  else{
+   if(navigationType!=='reload')primePrevious(window.navigation?.activation?.from?.url||document.referrer);
+   if(!primed)draw(true);
+  }
+  addEventListener('wils:page-snapshot',snapForPageCapture);
+  addEventListener('wils:page-arrival',snapForPageCapture);
   new MutationObserver(()=>schedule()).observe(nav,{subtree:true,attributes:true,attributeFilter:['aria-current','href']});
   if('ResizeObserver'in window){const observer=new ResizeObserver(()=>schedule(true));observer.observe(nav);if(header)observer.observe(header)}
   document.fonts?.ready.then(()=>schedule(true));
@@ -66,45 +76,6 @@
   wide.addEventListener('change',()=>schedule(true));
  }
 
- // Both endpoints must be ordinary inner documents. The cinematic home does
- // not opt in, so its intro, drone and scroll storytelling cannot be replaced.
- const innerNames=new Set(['producten.html','kwaliteit.html','bedrijf.html','contact.html','bereikbaarheid.html']);
- const isInnerURL=value=>{try{const url=new URL(value,location.href);return url.origin===location.origin&&innerNames.has(url.pathname.split('/').pop())}catch{return false}};
- const isInner=document.body.classList.contains('inner-page')&&isInnerURL(location.href)&&!document.body.hasAttribute('data-site-motion-page');
- let activeTransition=null;
- if(isInner&&'onpageswap'in window&&'onpagereveal'in window){
-  root.setAttribute('data-wils-page-transition','');
-  const optIn=document.createElement('style');
-  optIn.setAttribute('data-wils-transition-opt-in','');
-  optIn.media='(prefers-reduced-motion: no-preference)';
-  optIn.textContent='@view-transition { navigation: auto; }';
-  document.head.append(optIn);
-  function settleArrival(){
-   const top=header?.getBoundingClientRect().height||0;
-   const candidates=document.querySelectorAll('[data-page-hero], [data-opening-group], main .enter, main [data-enter], main .media-reveal');
-   candidates.forEach(node=>{
-    const box=node.getBoundingClientRect();
-    if(box.bottom<=top||box.top>=innerHeight)return;
-    node.setAttribute('data-wils-arrival-settled','');
-    const targets=[node,...node.querySelectorAll('[data-banner-title],.page-banner-curtain,.reveal-curtain')];
-    targets.forEach(target=>target.getAnimations?.().forEach(animation=>{try{animation.finish()}catch{animation.cancel()}}));
-   });
-  }
-  addEventListener('pageswap',event=>{
-   if(!event.viewTransition)return;
-   const destination=event.activation?.entry?.url;
-   if(reduced.matches||!destination||!isInnerURL(destination))event.viewTransition.skipTransition();
-  });
-  addEventListener('pagereveal',event=>{
-   const transition=event.viewTransition;
-   if(!transition)return;
-   const previous=window.navigation?.activation?.from?.url;
-   if(reduced.matches||(previous&&!isInnerURL(previous))){transition.skipTransition();return}
-   activeTransition=transition;
-   settleArrival();
-   if(previous)primePrevious(previous);
-   transition.finished.catch(()=>{}).finally(()=>{if(activeTransition===transition)activeTransition=null;schedule(true)});
-  });
- }
- reduced.addEventListener('change',()=>{schedule(true);if(reduced.matches)activeTransition?.skipTransition()});
+ // V98 owns document transitions; this module retains only the active-nav rail.
+ reduced.addEventListener('change',()=>schedule(true));
 })();

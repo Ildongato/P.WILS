@@ -334,34 +334,7 @@ html.history-compact .history-tab::before{
 }
 @media(max-width:1100px){.nav-active-marker{display:none}}
 
-/* Only opted-in inner pages participate; JS adds the @view-transition rule
-   after support checks. Home never opts in. No navigation is intercepted. */
-html[data-wils-page-transition] .site-header{view-transition-name:wils-header}
-::view-transition-old(root){
- animation:wils-page-leave 300ms cubic-bezier(.22,1,.36,1) both;
- mix-blend-mode:normal;
-}
-::view-transition-new(root){
- animation:wils-page-arrive 300ms cubic-bezier(.22,1,.36,1) both;
- mix-blend-mode:normal;
-}
-::view-transition-group(wils-header){animation:none}
-::view-transition-old(wils-header){animation:wils-header-leave 300ms cubic-bezier(.22,1,.36,1) both}
-::view-transition-new(wils-header){animation:wils-header-arrive 300ms cubic-bezier(.22,1,.36,1) both}
-@keyframes wils-page-leave{from{opacity:1}to{opacity:0}}
-@keyframes wils-page-arrive{from{opacity:0;transform:translate3d(0,8px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
-@keyframes wils-header-leave{from{opacity:1}to{opacity:0}}
-@keyframes wils-header-arrive{from{opacity:0}to{opacity:1}}
-/* A cross-document arrival supplies this first-viewport entrance already.
-   Persistent readable overrides also settle a late IntersectionObserver callback.
-   No hero camera, parallax target or timeline element is selected here. */
-[data-wils-arrival-settled][data-opening-group],
-[data-wils-arrival-settled].enter,
-[data-wils-arrival-settled][data-enter],
-[data-wils-arrival-settled] [data-banner-title]{opacity:1!important;transform:none!important}
-[data-wils-arrival-settled]>.reveal-curtain,
-[data-wils-arrival-settled] .page-banner-curtain{display:none!important}
+/* V98 owns document transitions; the nav keeps its reduced-motion rule. */
 @media(prefers-reduced-motion:reduce){
  .nav-active-marker,.site-header .desktop-nav>a.nav-link::after{transition:none}
- ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
 }

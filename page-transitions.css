@@ -1,0 +1,44 @@
+/* V106. A single reveal of the final page. No image-frame interpolation,
+   moving text captures or secondary entrances after the mask clears. */
+.page-transition-media{position:absolute;inset:0;z-index:-1;isolation:isolate;pointer-events:none}
+html[data-wils-transition]{--wils-page-ease:cubic-bezier(.4,0,.2,1)}
+html[data-wils-transition]::view-transition{pointer-events:none}
+html[data-wils-transition]::view-transition-group(*){animation:none}
+html[data-wils-transition]::view-transition-old(*),
+html[data-wils-transition]::view-transition-new(*){
+ animation:none;opacity:1;mix-blend-mode:normal;
+}
+/* Both root snapshots are the complete viewport. Their photograph and content
+   stay in place; only the incoming snapshot's visible area changes. */
+html[data-wils-transition]::view-transition-group(root){z-index:0;animation:none}
+html[data-wils-transition]::view-transition-image-pair(root){isolation:isolate}
+html[data-wils-transition]::view-transition-old(root),
+html[data-wils-transition]::view-transition-new(root){width:100%;height:100%;object-fit:fill}
+html[data-wils-transition="home-inner"]::view-transition-new(root),
+html[data-wils-transition="inner-inner"]::view-transition-new(root){
+ animation:wils106-reveal-down var(--wils-page-duration,380ms) var(--wils-page-ease) both;
+}
+html[data-wils-transition="inner-home"]::view-transition-new(root){
+ animation:wils106-reveal-up var(--wils-page-duration,380ms) var(--wils-page-ease) both;
+}
+/* Logo and navigation keep their geometry. Capture owners settle the active
+   marker before these snapshots, including fast native back/forward visits. */
+html[data-wils-transition]::view-transition-group(wils-header){z-index:20;animation:none}
+html[data-wils-transition]::view-transition-old(wils-header),
+html[data-wils-transition]::view-transition-new(wils-header){
+ width:100%;height:100%;object-fit:cover;
+}
+html[data-wils-transition]::view-transition-old(wils-header){animation:wils106-fade-out 160ms ease-out both}
+html[data-wils-transition]::view-transition-new(wils-header){animation:wils106-fade-in 160ms ease-out both}
+/* Deep links, scrolled departures and task/text destinations need no broad
+   reveal. Keep the old page opaque until the new page covers it, without a flash. */
+html[data-wils-transition="quiet"]::view-transition-new(root){animation:wils106-fade-in 180ms ease-out both}
+@keyframes wils106-reveal-down{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0)}}
+@keyframes wils106-reveal-up{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0)}}
+@keyframes wils106-fade-in{from{opacity:0}to{opacity:1}}
+@keyframes wils106-fade-out{from{opacity:1}to{opacity:0}}
+@media(prefers-reduced-motion:reduce){
+ html[data-wils-transition]::view-transition-group(*),
+ html[data-wils-transition]::view-transition-old(*),
+ html[data-wils-transition]::view-transition-new(*){animation:none!important}
+}

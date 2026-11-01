@@ -155,7 +155,7 @@
     }
     form.addEventListener('submit',event=>{
       event.preventDefault();attempted=true;
-      const data=collect(),errors=refreshErrors(),invalid=fields.filter(field=>has(errors,field.id.replace('request-','')));
+      const data=collect(),errors=refreshErrors(),invalid=fields.filter(field=>has(errors,field.id.replace('request-',''))).sort((a,b)=>a.compareDocumentPosition(b)&4?-1:1);
       if(invalid.length){
         if(specNames.some(name=>has(errors,name))){const specifications=get('request-specifications');if(specifications)specifications.open=true}
         invalid[0].focus();return;

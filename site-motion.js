@@ -4,15 +4,14 @@
  const root=document.documentElement,body=document.body;
  if(!body.classList.contains('inner-page')||!body.hasAttribute('data-site-motion-page'))return;
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
- const records=new Map();
+ const records=new Map(),pending=new Set();
  const ease={body:'cubic-bezier(.22,1,.36,1)',heading:'cubic-bezier(.16,1,.3,1)',media:'cubic-bezier(.22,1,.36,1)'};
  const mediaPlans=new Map(),captionOwners=new Map();
  let observer,frame=0,previousWidth=innerWidth;
- const fontsWereLoading=document.fonts?.status==='loading';
  const deepLink=!!location.hash&&location.hash!=='#top';
  const excluded='#request-controls,#request-review,#request-error-summary,.pg-product-entry,.company-archive,[data-archive-image],.route-map,.quality-identification-mark';
  const bounds=node=>node.getBoundingClientRect();
- function eligible(node){return node&&!node.closest('[hidden],[inert]')&&!node.closest(excluded)&&bounds(node).height>0}
+ function eligible(node,box){return node&&!node.closest('[hidden],[inert]')&&!node.closest(excluded)&&(box||bounds(node)).height>0}
  function setState(record,state){record.state=state;record.node.setAttribute('data-site-motion-state',state)}
  function planMedia(node){
   const image=node?.querySelector('img');
@@ -53,6 +52,7 @@
  }
  function finish(record){
   if(!record||record.state==='complete')return;
+  pending.delete(record);
   setState(record,'complete');clearTimeout(record.watchdog);
   record.animations.forEach(animation=>animation.cancel());record.animations=[];
   if(record.kind!=='media'){record.node.style.removeProperty('opacity');record.node.style.removeProperty('transform')}
@@ -93,21 +93,22 @@
   return true;
  }
  function register(node,kind,{delay=0,duration=kind==='heading'?520:kind==='media'?520:440,distance=12}={}){
-  if(records.has(node)||!eligible(node))return;
-  const record={node,kind,delay,duration,distance,state:'new',animations:[],classes:[],watchdog:0};records.set(node,record);
+  if(!node||records.has(node))return;
   const box=bounds(node);
-  if(reduced.matches||!node.animate||!observer||box.bottom<=0||(deepLink&&box.top<innerHeight*.94)){finish(record);return}
+  if(!eligible(node,box))return;
+  const record={node,kind,delay,duration,distance,state:'new',animations:[],classes:[],watchdog:0};records.set(node,record);pending.add(record);
+  if(reduced.matches||!node.animate||!observer||box.bottom<=0||(deepLink&&box.top<innerHeight*.94)||(root.dataset.wilsPageArrival&&box.top<innerHeight)){finish(record);return}
   try{
    setState(record,'pending');
    if(kind==='heading'&&splitHeading(record)){}
    else if(kind==='media'){if(!prepareMedia(record)){finish(record);return}}
    else{record.kind='body';node.style.opacity='0';if(distance)node.style.transform=`translate3d(0,${distance}px,0)`}
    observer.observe(node);
-   if(box.top<innerHeight*.93)start(record);
+   if(box.top<innerHeight*.93)start(record,box);
   }catch{finish(record)}
  }
- function start(record){
-  if(record.state!=='pending'||!eligible(record.node))return;
+ function start(record,box){
+  if(record.state!=='pending'||!eligible(record.node,box))return;
   setState(record,'playing');
   try{
    const options={duration:record.duration,delay:record.delay,fill:'both'};
@@ -125,23 +126,24 @@
  }
  function reconcile(){
   frame=0;
-  for(const record of records.values()){
-   if(record.state==='complete')continue;
-   const box=bounds(record.node);
-   if(!box.height||record.node.closest('[hidden],[inert]'))continue;
+  // Capture every geometry before starting/finishing any unit. Restoring a
+  // heading or removing a media layer must not force layout for the next read.
+  const snapshots=[...pending].map(record=>({record,box:bounds(record.node),blocked:!!record.node.closest('[hidden],[inert]')}));
+  for(const {record,box,blocked} of snapshots){
+   if(record.state==='complete'||!box.height||blocked)continue;
    if(box.bottom<=0)finish(record);
-   else if(box.top<innerHeight*.93)start(record);
+   else if(box.top<innerHeight*.93)start(record,box);
   }
  }
- function schedule(){if(!frame)frame=requestAnimationFrame(reconcile)}
+ function schedule(){if(pending.size&&!frame)frame=requestAnimationFrame(reconcile)}
  function settleVisible(){
-  for(const record of records.values()){
-   const box=bounds(record.node);
-   if(record.state!=='complete'&&box.height&&box.top<innerHeight)finish(record);
+  const snapshots=[...pending].map(record=>({record,box:bounds(record.node)}));
+  for(const {record,box} of snapshots){
+   if(box.height&&box.top<innerHeight)finish(record);
   }
   schedule();
  }
- function settleAll(){records.forEach(finish)}
+ function settleAll(){[...pending].forEach(finish)}
  function resize(){
   if(innerWidth===previousWidth){schedule();return}
   previousWidth=innerWidth;
@@ -165,7 +167,7 @@
   schedule();
  }
  try{
-  if('IntersectionObserver'in window)observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){const record=records.get(entry.target);if(record)start(record)}}),{rootMargin:'0px 0px -7% 0px',threshold:.04});
+  if('IntersectionObserver'in window)observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){const record=records.get(entry.target);if(record)start(record,entry.boundingClientRect)}}),{rootMargin:'0px 0px -7% 0px',threshold:.04});
   const hero=document.querySelector('[data-page-hero]');
   // Determine caption ownership before any body/heading can prepare it.
   if(hero?.querySelector('.page-banner-media'))planMedia(hero.querySelector('.page-banner-media'));
@@ -189,6 +191,9 @@
   root.setAttribute('data-site-motion-ready','');
  }catch{settleAll()}
  addEventListener('scroll',schedule,{passive:true});
+ // Native page snapshots own the first viewport; future scroll entries keep their owner.
+ addEventListener('wils:page-arrival',settleVisible);
+ addEventListener('wils:page-snapshot',settleVisible);
  addEventListener('hashchange',settleVisible);
  addEventListener('popstate',settleVisible);
  addEventListener('pageshow',event=>{if(event.persisted)settleAll();else schedule()});
@@ -196,7 +201,8 @@
  addEventListener('resize',resize,{passive:true});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)settleVisible()});
  document.addEventListener('focusin',event=>{records.forEach(record=>{if(record.node===event.target||record.node.contains(event.target)||record.media?.group.contains(event.target))finish(record)})});
- document.fonts?.ready.then(()=>{if(fontsWereLoading)reflowHeadings();else schedule()});
+ // loadingdone owns font reflow; readiness must not repeat the same rebuild.
+ document.fonts?.ready.then(schedule);
  document.fonts?.addEventListener?.('loadingdone',reflowHeadings);
  reduced.addEventListener('change',()=>{if(reduced.matches)settleAll();else schedule()});
  schedule();

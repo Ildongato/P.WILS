@@ -32,6 +32,9 @@
 .company-director figcaption p{font-size:15px;margin-top:5px}
 .company-team-copy{max-width:65ch;min-width:0}
 .company-evidence{background:var(--aluminium)}
+/* V103: compact production chapter; opening and chronology keep their own scale. */
+.company-view .company-evidence.chapter{padding-block:48px}
+.company-view .company-evidence h2{font-size:clamp(32px,2.5vw,36px)}
 .company-evidence .chapter-head{display:block;margin-bottom:28px}
 .company-production-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:32px;align-items:start}
 .company-production-copy{grid-column:1/8}
@@ -89,6 +92,7 @@
 }
 @media(max-width:820px){
  .company-view .chapter{padding-block:48px}
+ .company-view .company-evidence.chapter{padding-block:40px}
  .company-opening.page-intro{padding-block:40px 24px}
  .company-opening-grid{grid-template-columns:1fr;gap:28px}
  .company-opening-copy,.company-establishing{grid-column:auto}

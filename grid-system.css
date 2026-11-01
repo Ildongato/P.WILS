@@ -1,0 +1,172 @@
+/* V115. Shared physical column lines, scoped to the current main pages.
+   The outer containers, typography, colours, imagery and motion owners remain
+   in their existing stylesheets. Data registers retain their internal tracks. */
+.grid-system-115{
+ --grid-space-tight:16px;
+ --grid-space-small:24px;
+ --grid-space-medium:32px;
+ --grid-space-section:48px;
+ --grid-main-gap:var(--grid-space-medium);
+ --grid-main-columns:repeat(12,minmax(0,1fr));
+}
+@media(max-width:1100px){
+ .grid-system-115{--grid-main-gap:var(--grid-space-small)}
+}
+
+/* The standalone careers chapter follows the current chapter typography.
+   Its existing factual text and contact link are reused without new claims. */
+.grid-system-115.company-page .company-careers.chapter{
+ padding-block:var(--grid-space-medium);
+ border-top:1px solid var(--rule);
+}
+.grid-system-115 .careers-layout{
+ display:grid;grid-template-columns:minmax(0,1fr);gap:var(--grid-space-tight);
+ align-items:start;
+}
+.grid-system-115 .careers-layout>h2{
+ margin:0;font-size:clamp(28px,2.2vw,32px);line-height:1.14;
+ font-weight:560;letter-spacing:-.03em;
+}
+.grid-system-115 .careers-copy{min-width:0;max-width:65ch}
+.grid-system-115 .careers-copy>p{margin:0;font-size:17px;line-height:1.55;max-width:65ch}
+.grid-system-115 .careers-copy>.text-link{
+ display:inline-flex;align-items:center;min-height:44px;margin-top:var(--grid-space-tight);
+}
+.grid-system-115 .company-team-copy>h3{
+ margin:0;font-size:22px;line-height:1.25;font-weight:560;letter-spacing:-.02em;
+}
+.grid-system-115 .company-team-copy>p{margin:0;min-width:0}
+
+/* Two quiet production/careers links share a row when they fit. Flex wrapping
+   preserves the same left edge on narrow screens without an orphaned inset. */
+.grid-system-115 .company-editorial>.company-evidence{
+ display:flex;flex-wrap:wrap;column-gap:var(--grid-space-small);row-gap:0;
+}
+.grid-system-115 .company-editorial>.company-evidence>.production-statement{
+ flex:0 0 100%;
+}
+.grid-system-115 .company-editorial>.company-evidence>.text-link{
+ display:inline-flex;align-items:center;min-height:44px;max-width:100%;
+}
+
+@media screen and (min-width:821px){
+ /* Functional 4/8 pattern. Twelve tracks are real tracks, so column five
+    remains identical in a 4/8, 5/7 or 6/6 composition with the same container. */
+ .grid-system-115 :is(
+  .products-heading,.product-panel-body,.quality-heading,.news-layout,
+  .company-team-copy,.careers-layout,.company-news-top,
+  .pg-execution-layout,.pg-inquiry .composer-layout,
+  .quality-opening-lead,.quality-process-heading,.quality-additional-documents,
+  .contact-task-layout,.contact-directory .contact-directory-head,
+  .contact-route-heading,.company-data-grid
+ ){
+  display:grid;grid-template-columns:var(--grid-main-columns);
+  column-gap:var(--grid-main-gap);align-items:start;
+ }
+ .grid-system-115 :is(
+  .products-heading,.product-panel-body,.quality-heading,.news-layout,
+  .company-team-copy,.careers-layout,.company-news-top,
+  .pg-execution-layout,.pg-inquiry .composer-layout,
+  .quality-opening-lead,.quality-process-heading,.quality-additional-documents,
+  .contact-task-layout,.contact-directory .contact-directory-head,
+  .contact-route-heading,.company-data-grid
+ )>:first-child{grid-column:1/5;min-width:0}
+ .grid-system-115 :is(
+  .products-heading,.product-panel-body,.quality-heading,.news-layout,
+  .company-team-copy,.careers-layout,.company-news-top,
+  .pg-execution-layout,.pg-inquiry .composer-layout,
+  .quality-opening-lead,.quality-process-heading,.quality-additional-documents,
+  .contact-task-layout,.contact-directory .contact-directory-head,
+  .contact-route-heading,.company-data-grid
+ )>:nth-child(2){grid-column:5/-1;min-width:0}
+
+ /* Home: the modest photo sits inside the four-column region, rather than
+    growing to fill it. The product register uses the shared column-five axis. */
+ .grid-system-115 .product-panel-body>.product-visual{
+  width:100%;max-width:384px;justify-self:start;
+ }
+ .grid-system-115 .quality-heading{row-gap:var(--grid-space-tight)}
+ .grid-system-115 .quality-heading>h2{grid-row:1/3}
+ .grid-system-115 .quality-heading>p{grid-row:1}
+ .grid-system-115 .quality-heading>.text-link{grid-column:5/-1;grid-row:2}
+
+ /* Editorial 5/7 pattern. Portraits keep their own two equal inner columns. */
+ .grid-system-115 :is(.company-editorial-opening,.company-production-grid){
+  display:grid;grid-template-columns:var(--grid-main-columns);
+  column-gap:var(--grid-main-gap);row-gap:var(--grid-space-medium);
+ }
+ .grid-system-115 :is(.company-editorial-copy,.company-production-copy){grid-column:1/6}
+ .grid-system-115 :is(.company-editorial-portraits,.company-photo-request){grid-column:6/-1}
+ .grid-system-115 .company-editorial-opening>.company-team-copy{
+  grid-column:1/-1;row-gap:var(--grid-space-tight);
+  padding-top:var(--grid-space-small);
+ }
+
+ /* Balanced 6/6 exception for equivalent certificate documents. Its nested
+    mark, certificate metadata and download link keep their existing layout. */
+ .grid-system-115 .quality-opening .quality-register{
+  display:grid;grid-template-columns:var(--grid-main-columns);
+  column-gap:var(--grid-main-gap);
+ }
+ .grid-system-115 .quality-opening .quality-register>:nth-child(odd){grid-column:1/7}
+ .grid-system-115 .quality-opening .quality-register>:nth-child(even){grid-column:7/-1}
+
+ /* Three equal service contacts fit the same twelve-track basis. Responsive
+    two-column and single-column service layouts are left to V81 below 821px. */
+ .grid-system-115 .quality-service .quality-contact{
+  grid-template-columns:var(--grid-main-columns);column-gap:var(--grid-main-gap);
+ }
+ .grid-system-115 .quality-service .quality-contact>:nth-child(1){grid-column:1/5}
+ .grid-system-115 .quality-service .quality-contact>:nth-child(2){grid-column:5/9}
+ .grid-system-115 .quality-service .quality-contact>:nth-child(3){grid-column:9/-1}
+
+ /* V110 preserved as a relationship on the true shared grid. If W is the row
+    width and G the main gutter, column five starts at (W+G)/3. The flat name/
+    email register keeps its smaller inner gap, so its first track subtracts
+    that gap; names, form, introductions and business data meet exactly. */
+ .grid-system-115.contact-efficiency-84{
+  --contact-main-gap:var(--grid-main-gap);
+ }
+ .grid-system-115 .department-row{
+  grid-template-columns:
+   minmax(0,calc((100% + var(--grid-main-gap))/3 - var(--contact-register-gap)))
+   minmax(0,3fr) minmax(0,5fr);
+  column-gap:var(--contact-register-gap);
+ }
+ .grid-system-115 .department-row h3{
+  max-width:calc(100% - var(--grid-main-gap) + var(--contact-register-gap));
+ }
+
+ /* Corresponding internal heading intervals use the named scale; section
+    padding and pinned scene heights intentionally remain with their owners. */
+ .grid-system-115 :is(
+  .quality-process-heading,.company-news-top,
+  .contact-directory .contact-directory-head,.contact-route-heading
+ ){margin-bottom:var(--grid-space-small)}
+ .grid-system-115 .quality-heading{margin-bottom:var(--grid-space-medium)}
+}
+
+/* Home's atmospheric production composition already stacks at 1000px.
+   Above that breakpoint use five text tracks, preserving its absolute photo,
+   fade, row distribution, height and all below-header scroll behaviour. */
+@media screen and (min-width:1001px){
+ .grid-system-115 .company-editorial{
+  grid-template-columns:var(--grid-main-columns);
+  grid-template-areas:none;column-gap:var(--grid-main-gap);
+ }
+ .grid-system-115 .company-editorial>.company-copy{grid-area:auto;grid-column:1/6;grid-row:2}
+ .grid-system-115 .company-editorial>.company-evidence{grid-area:auto;grid-column:1/6;grid-row:3}
+}
+
+/* Existing tablet and phone compositions continue to own their grids. Only
+    the newly extracted semantic team/careers rows need a stacked counterpart. */
+@media screen and (max-width:820px){
+ .grid-system-115 .company-editorial-opening>.company-team-copy{
+  grid-template-columns:minmax(0,1fr);gap:var(--grid-space-tight);
+ }
+ .grid-system-115.company-page .company-careers.chapter{padding-block:var(--grid-space-small)}
+}
+@media screen and (max-width:600px){
+ .grid-system-115 .careers-layout>h2{font-size:28px}
+ .grid-system-115 .company-team-copy>h3{font-size:20px}
+}
