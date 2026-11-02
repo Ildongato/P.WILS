@@ -19,6 +19,10 @@ p{max-width:64ch}
 section[id]{scroll-margin-top:var(--header-h)}
 details[id],article[id]{scroll-margin-top:calc(var(--header-h) + 24px)}
 :focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+/* Chapter arrivals keep semantic focus without outlining a whole content block.
+   Interactive controls retain the visible keyboard focus defined above. */
+body :is(h1,h2,h3,h4,h5,h6,section,article,main)[tabindex="-1"]:focus,
+body .history-panel[tabindex]:focus{outline:none}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .skip-link{position:fixed;left:16px;top:-100px;padding:12px 20px;background:var(--ink);color:white;z-index:200}
 .skip-link:focus{top:12px}
