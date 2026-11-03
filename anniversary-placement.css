@@ -1,0 +1,14 @@
+/* Variant 4, approved at 82px / 16px. The headline keeps its original grid cell. */
+.hero-content>.hero-title-group{
+ position:relative;display:flex;flex-direction:column;grid-column:1/8;grid-row:1;align-self:end;min-width:0;
+}
+.hero-title-group>.hero-title{align-self:stretch;margin:0;max-width:100%}
+.hero-title-group>.hero-anniversary{
+ position:absolute;left:0;bottom:calc(100% + 16px);display:block;
+ width:82px;max-width:100%;margin:0;pointer-events:none;
+}
+.hero-anniversary>img{display:block;width:100%;height:auto}
+.hero-description>.hero-description-copy{display:block}
+@media(max-width:820px){
+ .hero-content>.hero-title-group{align-self:stretch;width:100%}
+}

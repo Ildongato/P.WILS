@@ -1,0 +1,44 @@
+/* Supplied anniversary branches with the site's real Host Grotesk numerals. */
+.hero-description > .hero-anniversary {
+  display: block;
+  width: 160px;
+  max-width: 100%;
+  margin-bottom: 20px;
+}
+.hero-anniversary > img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.hero-description > .hero-description-copy { display: block; }
+@media (max-width: 600px) {
+  .hero-lead .hero-description {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 96px;
+    column-gap: 16px;
+    align-items: start;
+    max-width: none;
+  }
+  .hero-description > .hero-anniversary {
+    grid-column: 2;
+    grid-row: 1;
+    width: 96px;
+    margin: 0;
+  }
+  .hero-description > .hero-description-copy {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+}
+@media (min-width: 601px) and (max-height: 520px) {
+  .hero-lead .hero-description {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 96px;
+    column-gap: 16px;
+    align-items: start;
+    max-width: none;
+  }
+  .hero-description > .hero-anniversary { grid-column: 2; grid-row: 1; width: 96px; margin: 0; }
+  .hero-description > .hero-description-copy { grid-column: 1; grid-row: 1; min-width: 0; }
+}

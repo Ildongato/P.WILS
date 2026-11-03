@@ -42,7 +42,12 @@ form#request-form[data-request-form="87"] .request-submit{padding-top:0}
 form#request-form[data-request-form="87"] .request-submit>.field-help{margin:12px 0 0}
 form#request-form[data-request-form="87"] .request-error-summary{padding-block:16px;margin-bottom:20px}
 form#request-form[data-request-form="87"] .action-primary{min-height:48px}
-form#request-form[data-request-form="87"] #request-review-text{min-height:320px}
+form#request-form[data-request-form="87"] #request-email-text{min-height:180px}
+form#request-form[data-request-form="87"] #request-action-status{margin-top:16px;font-size:14px;line-height:1.5;color:var(--muted)}
+form#request-form[data-request-form="87"] :is(#request-action-status,#request-fallback-status):empty{display:none}
+form#request-form[data-request-form="87"] #request-email-help{margin-top:20px}
+form#request-form[data-request-form="87"] #request-email-help .review-actions{margin-block:12px}
+form#request-form[data-request-form="87"] #request-fallback-status{margin-block:0 12px;font-size:14px;line-height:1.5}
 form#request-form[data-request-form="87"] .review-actions{gap:12px 24px}
 @media(max-width:600px){
  form#request-form[data-request-form="87"] .request-fields-grid,
@@ -50,6 +55,5 @@ form#request-form[data-request-form="87"] .review-actions{gap:12px 24px}
  form#request-form[data-request-form="87"] .request-product-options{row-gap:18px}
  form#request-form[data-request-form="87"] .request-wide{grid-column:auto}
  form#request-form[data-request-form="87"] .request-disclosure>summary{gap:12px;font-size:15px}
- form#request-form[data-request-form="87"] #request-review-text{min-height:300px}
  form#request-form[data-request-form="87"] .review-actions{gap:8px 20px}
 }

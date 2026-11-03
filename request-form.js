@@ -73,15 +73,15 @@
     lines.push('','Contactgegevens:',...details.map(([label,value])=>label+': '+clean(value)));
     const text=wellFormed(lines.join('\n')),subject='Vraag aan Wils | '+destination.label;
     const mailto='mailto:'+destination.recipient+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(text);
-    return {...destination,text,subject,mailto,tooLong:mailto.length>1800};
+    return {...destination,text,subject,mailto};
   }
   function init(win){
     const doc=win.document,get=id=>doc.getElementById(id),form=get('request-form');
     if(!form||form.dataset.requestForm!=='87'||form.dataset.requestFormReady==='87')return null;
-    const requiredIds=['request-controls','request-review','request-department','request-message','request-name','request-email','request-company','request-phone','request-product-fields','request-cut','request-fat','request-packaging','request-state','request-quantity','request-timing','request-error-summary','request-recipient-hint','request-review-title','request-review-recipient','request-review-text','request-length-note','request-open-email','request-copy','request-download','request-edit','request-action-status','request-routing-note'];
+    const requiredIds=['request-controls','request-email-help','request-department','request-message','request-name','request-email','request-company','request-phone','request-product-fields','request-cut','request-fat','request-packaging','request-state','request-quantity','request-timing','request-error-summary','request-recipient-hint','request-email-recipient','request-email-text','request-open-email','request-copy','request-download','request-action-status','request-fallback-status'];
     if(requiredIds.some(id=>!get(id)))return null;
     form.dataset.requestFormReady='87';
-    const productMode=form.dataset.requestMode==='product',department=get('request-department'),controls=get('request-controls'),review=get('request-review'),productFields=get('request-product-fields');
+    const productMode=form.dataset.requestMode==='product',department=get('request-department'),controls=get('request-controls'),emailHelp=get('request-email-help'),productFields=get('request-product-fields');
     const names=['message','name','email','company','phone'],specNames=Object.keys(specificationLabels);
     const fields=[...names,...specNames].map(name=>get('request-'+name));
     const checkboxes=[...form.querySelectorAll('input[name="product"]')],checkboxBySlug=new Map(checkboxes.map(input=>[input.value,input]));
@@ -126,6 +126,7 @@
       }
     }
     function departmentChanged(){
+      clearDraft();
       if(productMode)department.value='verkoop';
       const destination=route(department.value),isProduct=destination.key==='verkoop';
       productFields.hidden=!isProduct;productFields.disabled=!isProduct;
@@ -148,42 +149,53 @@
       if(seed.message&&!productMode)get('request-message').value=seed.message;
       if(sales())openTopic(seed.topic);
     }
-    function selectReviewText(){const text=get('request-review-text');text.focus();text.select()}
+    function selectDraftText(){const text=get('request-email-text');text.focus();text.select()}
+    function clearDraft(){
+      latest=null;emailHelp.hidden=true;emailHelp.open=false;
+      get('request-action-status').textContent='';get('request-fallback-status').textContent='';
+    }
+    function offerDraft(){
+      get('request-action-status').textContent='Uw e-mailconcept wordt geopend in uw e-mailprogramma. U verstuurt het daar zelf.';
+    }
     function edit(focus=true){
-      review.hidden=true;controls.hidden=false;latest=null;
+      clearDraft();
       if(focus)get('request-message').focus();
     }
     form.addEventListener('submit',event=>{
-      event.preventDefault();attempted=true;
+      event.preventDefault();clearDraft();attempted=true;
       const data=collect(),errors=refreshErrors(),invalid=fields.filter(field=>has(errors,field.id.replace('request-',''))).sort((a,b)=>a.compareDocumentPosition(b)&4?-1:1);
       if(invalid.length){
         if(specNames.some(name=>has(errors,name))){const specifications=get('request-specifications');if(specifications)specifications.open=true}
         invalid[0].focus();return;
       }
       latest=build(data);
-      get('request-review-text').value=latest.text;
-      const recipient=get('request-review-recipient');recipient.textContent=latest.recipient;recipient.href='mailto:'+latest.recipient;
-      get('request-routing-note').textContent='Uw vraag wordt gericht aan '+latest.label+'. U verstuurt het bericht zelf vanuit uw e-mailprogramma.';
-      const open=get('request-open-email');open.href=latest.tooLong?'mailto:'+latest.recipient:latest.mailto;open.hidden=latest.tooLong;
-      get('request-length-note').hidden=!latest.tooLong;
-      get('request-action-status').textContent='';controls.hidden=true;review.hidden=false;get('request-review-title').focus();
+      get('request-email-text').value=latest.text;
+      const recipient=get('request-email-recipient');recipient.textContent=latest.recipient;recipient.href='mailto:'+latest.recipient;
+      get('request-open-email').href=latest.mailto;
+      get('request-fallback-status').textContent='';emailHelp.hidden=false;emailHelp.open=false;
+      // Keep the complete draft and external-protocol launch in the original
+      // submit gesture. The mail application is the place to review and send.
+      offerDraft();
+      try{win.location.assign(latest.mailto)}catch{
+        emailHelp.open=true;
+        get('request-action-status').textContent='Uw e-mailprogramma kon niet worden geopend. Open het concept opnieuw of kopieer de berichttekst hieronder.';
+      }
     });
-    fields.forEach(field=>field.addEventListener('input',()=>{if(attempted)refreshErrors()}));
-    get('request-state').addEventListener('change',()=>{if(attempted)refreshErrors()});
+    fields.forEach(field=>field.addEventListener('input',()=>{clearDraft();if(attempted)refreshErrors()}));
+    get('request-state').addEventListener('change',()=>{clearDraft();if(attempted)refreshErrors()});
     department.addEventListener('change',departmentChanged);
-    checkboxes.forEach(input=>input.addEventListener('change',syncProductContext));
-    get('request-edit').addEventListener('click',()=>edit());
+    checkboxes.forEach(input=>input.addEventListener('change',()=>{clearDraft();syncProductContext()}));
     get('request-open-email').addEventListener('click',event=>{
-      if(!latest||latest.tooLong){event.preventDefault();return}
-      get('request-action-status').textContent='Het e-mailconcept is aangeboden aan uw e-mailprogramma. Controleer het daar en verstuur het zelf. Vanuit deze website is niets verzonden.';
+      if(!latest){event.preventDefault();return}
+      offerDraft();
     });
     get('request-copy').addEventListener('click',async()=>{
       if(!latest)return;const current=latest;
       try{
         await win.navigator.clipboard.writeText(current.text);
-        if(latest===current)get('request-action-status').textContent='Bericht gekopieerd. Plak het in uw e-mail en verstuur het naar '+current.recipient+'.';
+        if(latest===current)get('request-fallback-status').textContent='Bericht gekopieerd. Plak het in uw e-mail en verstuur het naar '+current.recipient+'.';
       }catch{
-        if(latest===current){selectReviewText();get('request-action-status').textContent='Kopiëren is niet gelukt. Selecteer de tekst hierboven of download het tekstbestand.'}
+        if(latest===current){selectDraftText();get('request-fallback-status').textContent='Kopiëren is niet gelukt. Selecteer de tekst hieronder of download het tekstbestand.'}
       }
     });
     get('request-download').addEventListener('click',()=>{
@@ -192,10 +204,10 @@
         const blob=new win.Blob([latest.text],{type:'text/plain;charset=utf-8'});url=win.URL.createObjectURL(blob);
         const link=doc.createElement('a');link.href=url;link.download='wils-vraag.txt';doc.body.appendChild(link);link.click();link.remove();
         win.setTimeout(()=>win.URL.revokeObjectURL(url),1000);
-        get('request-action-status').textContent='Download gestart. Gebruik de volledige tekst voor een e-mail aan '+latest.recipient+'.';
+        get('request-fallback-status').textContent='Download gestart. Gebruik de volledige tekst voor een e-mail aan '+latest.recipient+'.';
       }catch{
         if(url)try{win.URL.revokeObjectURL(url)}catch{}
-        selectReviewText();get('request-action-status').textContent='Downloaden is niet gelukt. Kopieer de volledige tekst hierboven naar een e-mail aan '+latest.recipient+'.';
+        selectDraftText();get('request-fallback-status').textContent='Downloaden is niet gelukt. Kopieer de volledige tekst hieronder naar een e-mail aan '+latest.recipient+'.';
       }
     });
     const inquirySection=get('aanvraag')||get('vraag'),status=doc.querySelector?doc.querySelector('.pg-inquiry-status'):null;

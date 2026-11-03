@@ -115,7 +115,7 @@
   function clearEntryStyles() {
     if (!window.gsap) return;
     gsap.set([gate, $('.entry-choice-panel'), headerNode, heroContent,
-      ...$$('.hero-title .line-mask > span'), $('.hero-lead'), $('.hero-description'), $('.hero-action'),
+      ...$$('.hero-title .line-mask > span'), $('.hero-lead'), $('.hero-description'), $('.hero-anniversary'), $('.hero-action'),
       scrollCue],
     { clearProps: 'transform,opacity,visibility,clipPath' });
     gsap.set([$('.hero-reading-shade'), $('.hero-entry-shade')], { clearProps: 'opacity,transition' });
@@ -235,7 +235,7 @@
         .fromTo(headerNode, { autoAlpha: 0 }, { autoAlpha: 1, duration: .26, ease: 'power2.out' }, .08)
         .set(heroContent, { opacity: 1, visibility: 'visible' }, .16)
         .fromTo('.hero-title .line-mask > span', { yPercent: 108 }, { yPercent: 0, duration: .56, stagger: .065, ease: 'power3.out' }, .20)
-        .fromTo('.hero-description', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .42, ease: 'power3.out' }, .40)
+        .fromTo('.hero-description, .hero-anniversary', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .42, ease: 'power3.out' }, .40)
         .fromTo('.hero-action', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: .40, ease: 'power3.out' }, .52)
         .fromTo(scrollCue, { opacity: 0 }, { opacity: 1, duration: .36, ease: 'power3.out' }, .64);
       entryWatchdog = setTimeout(complete, 1200);
@@ -421,12 +421,13 @@
   $$('[data-product-photo-link]').forEach(link => link.addEventListener('click', event => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     const detail = document.getElementById(link.hash.slice(1));
-    if (!detail?.matches('.product-disclosure')) return;
+    if (!detail?.matches('.product-disclosure,.product-permanent')) return;
     event.preventDefault();
-    detail.open = true;
+    if (detail.matches('details')) detail.open = true;
     pushHash('#' + detail.id);
     finishRevealsWithin(detail.closest('[data-group-panel]'));
-    $('summary', detail).focus({ preventScroll: true });
+    const focusTarget = $('summary', detail) || $('.permanent-product-name', detail);
+    focusTarget?.focus({ preventScroll: true });
     // On stacked phones the pictured product's data sits below the photograph.
     // Wide layouts keep the visitor's viewport still while the row opens.
     if (matchMedia('(max-width:600px)').matches) {
@@ -812,11 +813,14 @@
   function applyRoute(scroll = false) {
     let hash = location.hash.slice(1);
     try { hash = decodeURIComponent(hash); } catch { /* Keep external malformed fragments harmless. */ }
+    if (hash === 'productgroep-snuiten-en-oren') hash = 'productgroep-snuiten';
+    if (hash === 'productgroep-zwoerd-en-kin') hash = 'productgroep-zwoerd';
     let target = document.getElementById(hash);
     if (hash === 'geschiedenis') selectYear('1957');
     if (hash.startsWith('snit-')) target = document.getElementById('product-' + hash.slice(5));
-    if (target?.matches('.product-disclosure')) {
-      selectGroup(target.closest('[data-group-panel]').dataset.groupPanel); target.open = true;
+    if (target?.matches('.product-disclosure,.product-permanent')) {
+      selectGroup(target.closest('[data-group-panel]').dataset.groupPanel);
+      if (target.matches('details')) target.open = true;
     } else if (target?.matches('[data-group-panel]')) selectGroup(target.dataset.groupPanel);
     else if (target?.matches('[data-history-panel]')) {
       goToYear(target.dataset.historyPanel, false, { align: scroll }); return;

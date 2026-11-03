@@ -1,0 +1,14 @@
+/* A single product is always-readable content; multi-product groups keep details. */
+[data-single-product] .group-title{display:none}
+[data-single-product] .product-register{border-top:0}
+.product-permanent{border-block:1px solid var(--rule);scroll-margin-top:calc(var(--header-h) + 24px)}
+.permanent-product-header{
+ display:flex;justify-content:space-between;align-items:center;gap:24px;
+ min-height:64px;padding:16px 0;font-size:20px;line-height:1.3;
+ font-weight:520;letter-spacing:-.02em;
+}
+.permanent-product-header h3{font:inherit;margin:0}
+.permanent-product-header .product-code{margin:0;color:var(--muted);flex:none}
+.permanent-fat-note{display:block;font-size:14px;line-height:1.5;margin-top:3px;color:var(--muted)}
+@media(max-width:600px){.permanent-product-header{font-size:19px;gap:12px}}
+@media(max-width:360px){.permanent-product-header{font-size:17px}}

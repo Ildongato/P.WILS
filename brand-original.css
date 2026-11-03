@@ -1,0 +1,9 @@
+/* Approved original logo: keep one full-colour badge on every surface. */
+:root{--brand-width:104px}
+.brand{width:var(--brand-width);aspect-ratio:456/352;padding:0}
+.brand img{width:100%;height:100%;object-fit:contain}
+.entry-brand{width:var(--brand-width);height:auto}
+.closing-chapter .footer-brand img{width:120px;height:auto;filter:none}
+@media(max-width:1100px){:root{--brand-width:96px}}
+@media(max-width:600px){:root{--brand-width:82px}.closing-chapter .footer-brand img{width:104px}}
+@media(max-width:360px){:root{--brand-width:76px}}

@@ -1,0 +1,5 @@
+/* The spacious two-column hero follows 1.7 x the desktop title's 4.3vw scale.
+   Stacked screens and short landscape retain the approved 82px optical weight. */
+@media(min-width:821px) and (min-height:521px){
+ .hero-title-group>.hero-anniversary{width:clamp(96px,7.31vw,116px)}
+}

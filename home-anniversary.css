@@ -1,0 +1,15 @@
+/* The anniversary shares the existing intro paragraph and its entrance. */
+.hero-description > .hero-anniversary {
+  display: block;
+  margin-bottom: 16px;
+  font-size: clamp(28px, 2.5vw, 36px);
+  font-weight: 560;
+  line-height: 1.12;
+  letter-spacing: -.025em;
+}
+@media (max-width: 820px) {
+  .hero-description > .hero-anniversary { font-size: 30px; margin-bottom: 14px; }
+}
+@media (max-width: 360px) {
+  .hero-description > .hero-anniversary { font-size: 28px; }
+}
