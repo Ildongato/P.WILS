@@ -1,6 +1,7 @@
 (() => {
   'use strict';
   document.documentElement.classList.add('ui-enhanced');
+  const english=document.documentElement.lang==='en';
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
   const header=document.querySelector('.site-header');
   const toggle=document.querySelector('.menu-toggle');
@@ -10,8 +11,8 @@
     if(!toggle || !menu)return;
     menuAnimation?.cancel();
     toggle.setAttribute('aria-expanded',String(open));
-    toggle.setAttribute('aria-label',open?'Sluit navigatie':'Open navigatie');
-    const label=toggle.querySelector('[data-menu-label]');if(label)label.textContent=open?'Sluiten':'Menu';
+    toggle.setAttribute('aria-label',english?(open?'Close menu':'Open menu'):(open?'Sluit navigatie':'Open navigatie'));
+    const label=toggle.querySelector('[data-menu-label]');if(label)label.textContent=open?(english?'Close':'Sluiten'):'Menu';
     header?.classList.toggle('menu-open',open);
     menu.hidden=!open;
     if(open && !reduced.matches)menuAnimation=menu.animate([{opacity:0,transform:'translate3d(0,-6px,0)'},{opacity:1,transform:'none'}],{duration:220,easing:'cubic-bezier(.22,1,.36,1)'});

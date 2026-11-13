@@ -25,3 +25,5 @@ Local design proposals, source reviews and editorial notes are not included.
 
 The current website retains Host Grotesk. Separate font experiments are proposals.
 Font, icon and map attributions are retained with the assets and map UI.
+
+The English version is under `en/` and shares the approved site’s media and styles.

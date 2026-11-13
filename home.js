@@ -2,6 +2,8 @@
 (() => {
   'use strict';
   const root = document.documentElement;
+  const english = root.lang === 'en';
+  const currentLanguage = english ? 'eng' : 'nl';
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -133,7 +135,7 @@
     gate.hidden = false; gate.inert = false; setHomeAvailable(false);
     window.scrollTo({ top: 0, behavior: 'instant' });
     scheduleHeaderSurface(); syncMedia();
-    if (focus && !document.hidden) $('[data-entry-language="nl"]').focus({ preventScroll: true });
+    if (focus && !document.hidden) $(`[data-entry-language="${currentLanguage}"]`).focus({ preventScroll: true });
   }
   function finishEntry({ focus = false } = {}) {
     cancelEntryMotion();
@@ -156,7 +158,12 @@
     stopCueHint();
     if (root.classList.contains('ui-enhanced')) setMenu(false);
     entryReturnFocus = entryReturnFocus || focus;
-    if (write && location.hash) history.pushState(null, '', location.pathname + location.search);
+    if (write) {
+      const url = new URL(location.href);
+      url.hash = '';
+      if (english) url.searchParams.set('languages', '1');
+      if (url.href !== location.href) history.pushState(null, '', url);
+    }
     if (entryState === 'returning') return;
     if (!motion || entryState === 'entry' || reduced.matches || document.hidden || !window.gsap) {
       settleEntryGate({ focus: entryReturnFocus }); entryReturnFocus = false; return;
@@ -217,11 +224,14 @@
     } catch { complete(); }
   }
   function chooseLanguage(event) {
+    if (event.currentTarget.dataset.entryLanguage !== currentLanguage || event.button !== 0 ||
+        event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
     if (entryState !== 'entry') return;
-    // Both choices intentionally enter the same Dutch document.
-    document.documentElement.lang = 'nl';
-    history.pushState(null, '', '#intro');
+    const url = new URL(location.href);
+    url.searchParams.delete('languages');
+    url.hash = 'intro';
+    history.pushState(null, '', url);
     entryState = 'entering'; root.dataset.entryState = 'entering';
     root.classList.add('entry-entering'); gate.inert = true;
     if (reduced.matches || !window.gsap) { finishEntry({ focus: true }); return; }
@@ -248,7 +258,8 @@
     openEntry({ write: true, focus: true, motion: true });
   }));
   function routeEntry() {
-    if (!location.hash) openEntry({ motion: true });
+    const showLanguages = english ? new URLSearchParams(location.search).has('languages') : !location.hash;
+    if (showLanguages) openEntry({ motion: true });
     else if (entryState !== 'ready') finishEntry();
   }
   addEventListener('popstate', routeEntry);
@@ -327,8 +338,10 @@
   function setMenu(open, focus = false) {
     headerNode.classList.toggle('menu-open', open);
     menuButton.setAttribute('aria-expanded', String(open));
-    menuButton.setAttribute('aria-label', open ? 'Sluit navigatie' : 'Open navigatie');
-    $('[data-menu-label]').textContent = open ? 'Sluiten' : 'Menu';
+    menuButton.setAttribute('aria-label', english
+      ? (open ? 'Close menu' : 'Open menu')
+      : (open ? 'Sluit navigatie' : 'Open navigatie'));
+    $('[data-menu-label]').textContent = open ? (english ? 'Close' : 'Sluiten') : 'Menu';
     $('.menu-glyph path').setAttribute('d', open ? 'M5 5l14 14M5 19 19 5' : 'M4 8h16M4 16h16');
     menu.hidden = !open;
     if (open) animate(menu, [{ clipPath: 'inset(0 0 100% 0)', opacity: .6 }, { clipPath: 'inset(0 0 0 0)', opacity: 1 }], { duration: 220, easing: 'cubic-bezier(.22,1,.36,1)' });
@@ -339,9 +352,8 @@
     const link = event.target.closest('a');
     if (!link || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     setMenu(false);
-    if (link.matches('[data-menu-language]')) {
+    if (link.matches('[data-menu-language][aria-current="true"]')) {
       event.preventDefault();
-      // Both menu language choices use this Dutch home until translation exists.
       pushHash('#intro');
       $('#hero-title').focus({ preventScroll: true });
       window.scrollTo({ top: 0, behavior: reduced.matches ? 'instant' : 'smooth' });
@@ -355,7 +367,7 @@
   const groups = $$('[data-group-panel]');
   const groupRail = $('.group-tabs');
   groupRail.setAttribute('role', 'tablist');
-  groupRail.setAttribute('aria-label', 'Kies een productgroep');
+  groupRail.setAttribute('aria-label', english ? 'Choose a product category' : 'Kies een productgroep');
   groupTabs.forEach(tab => {
     tab.setAttribute('role', 'tab');
     tab.setAttribute('aria-controls', 'productgroep-' + tab.dataset.groupTab);
@@ -413,7 +425,7 @@
       $('[data-product-caption]', panel).textContent = detail.dataset.label;
       const photoLink = $('[data-product-photo-link]', panel);
       photoLink.setAttribute('href', '#' + detail.id);
-      photoLink.setAttribute('aria-label', 'Specificaties van ' + detail.dataset.label);
+      photoLink.setAttribute('aria-label', (english ? 'Specifications for ' : 'Specificaties van ') + detail.dataset.label);
       imageCrossfade($('.product-image-stage', panel), previous, img);
       animate($('.product-detail', detail), [{ opacity: 0 }, { opacity: 1 }], { duration: 180, easing: 'cubic-bezier(.2,.7,.2,1)' });
     });

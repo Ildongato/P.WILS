@@ -19,7 +19,7 @@
    if(url.origin!==directory.origin||!/^https?:$/.test(url.protocol))return null;
    let role;
    if(url.pathname.startsWith(directory.pathname)){
-    const relative=url.pathname.slice(directory.pathname.length);
+    const relative=url.pathname.slice(directory.pathname.length).replace(/^en\//,'');
     role=relative===''?'home':pages[relative]||(textNames.has(relative)?'text':/\.html$/i.test(relative)?'task':null);
    }else if(directory.pathname.endsWith('/pwils-home-industrial-v1/dist/')){
     const legacy=new URL('../../pwils-producten-v6/',directory).pathname;
@@ -32,7 +32,7 @@
  }
  function topTarget(target){
   if(!target)return false;
-  if([...target.url.searchParams.keys()].some(key=>['product','document','onderwerp','afdeling'].includes(key)))return false;
+  if([...target.url.searchParams.keys()].some(key=>['product','document','onderwerp','afdeling','languages'].includes(key)))return false;
   return !target.url.hash||target.url.hash==='#top'||(target.role==='home'&&target.url.hash==='#intro');
  }
  function plan(from,to,{top=true,history=false,viewport=true}={}){
